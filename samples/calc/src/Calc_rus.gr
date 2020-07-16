@@ -1,0 +1,54 @@
+// Filename:  Calc_rus.gr
+// Content:   Alternarive grammar for simple calculator sample (based on Russian language)
+// Provided AS IS under MIT License; see LICENSE file in root folder.
+
+// Грамматика калькулятора
+
+%expression calc
+
+'[0-9]*\.?[0-9]+'   Number, 'число';
+
+'плюс'          Plus,       '+';
+'минус'         Minus,      '-';
+'умножить_на'   Multiply,   '*';
+'разделить_на'  Divide,     '/';
+'в_степени'     Power,      '^';
+'равно'         Assign,     ':=';
+
+'\('    OpeningParenthesis, '(';
+'\)'    ClosingParenthesis, ')';
+
+'[a-zA-Z_]+[a-zA-Z0-9_]*'   Identifier, 'идентификатор';
+
+'[ \t]' %ignore;
+
+'\n'    EndOfLine,  'конец_строки';
+
+%prec // от низкого приоритета к высокому
+
+%right  ':=' ;
+%left   '+', '-' ;
+%left   '*', '/' ;
+%right  '^' ;
+
+%production unit
+
+Unit        unit -> unit clause ;
+Oneliner    unit -> clause ;
+
+ExpressionClause    clause -> expression ;
+AssignmentClause    clause -> assignment ;
+EmptyClause         clause -> 'конец_строки' ;
+
+Number          expression -> 'число' ;
+Identifier      expression -> 'идентификатор' ;
+Negation        expression -> '-' expression ;
+Expression      expression -> '(' expression ')' ;
+Addition        expression -> expression '+' expression ;
+Substruction    expression -> expression '-' expression ;
+Multiplication  expression -> expression '*' expression ;
+Division        expression -> expression '/' expression ;
+Exponentiation  expression -> expression '^' expression ;
+
+Assignment  assignment -> 'идентификатор' ':=' expression ;
+Replication assignment -> 'идентификатор' ':=' assignment ;

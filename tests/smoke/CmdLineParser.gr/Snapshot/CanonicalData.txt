@@ -1,0 +1,788 @@
+
+Item 0 - 0x00
+Source state(s): Accept
+ID:0    [Accept2]                 -> * CmdLine 
+ID:1    CmdLine                   -> * FileNameOption OptionList 
+ID:2    FileNameOption            -> * FileName 
+ID:3    FileNameOption            -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 1 - 0x01
+Source state(s): 0
+ID:0    [Accept2]                 -> CmdLine *                                          LA: 'EOF'
+
+Item 2 - 0x02
+Source state(s): 0
+ID:2    FileNameOption            -> FileName *                                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 3 - 0x03
+Source state(s): 0
+ID:1    CmdLine                   -> FileNameOption * OptionList 
+ID:4    OptionList                -> * Option OptionList 
+ID:5    OptionList                -> *                                                  LA: 'EOF'
+ID:6    Option                    -> * '@' FileName 
+ID:7    Option                    -> * '-lr' 
+ID:8    Option                    -> * '-lalr' 
+ID:9    Option                    -> * '-clr' 
+ID:10   Option                    -> * '-parse' ParseDataParamList 
+ID:16   Option                    -> * '-enumfile' EnumFileParam 
+ID:19   Option                    -> * '-enumclasses' 
+ID:20   Option                    -> * '-enumstrings' 
+ID:21   Option                    -> * '-termenum' TermEnumParamList 
+ID:27   Option                    -> * '-nontermenum' NonTermEnumParamList 
+ID:33   Option                    -> * '-prodenum' ProdEnumParamList 
+ID:39   Option                    -> * '-reducefunc' ReduceFuncParamList 
+ID:46   Option                    -> * '-dfa' StaticDFAParamList 
+ID:51   Option                    -> * '-parsetable' StaticParseTableParamList 
+ID:56   Option                    -> * '-canonical' CanonicalParam 
+ID:59   Option                    -> * '-conflicts' ConflictReportParamList 
+ID:66   Option                    -> * '-nowarnings' 
+ID:67   Option                    -> * '-notes' 
+ID:68   Option                    -> * '-stats' 
+ID:69   Option                    -> * '-help' HelpParamList 
+ID:74   Option                    -> * '-quiet' 
+ID:75   Option                    -> * '-version' 
+ID:76   Option                    -> * '-clg' CmdLineGrammarParam 
+
+Item 4 - 0x04
+Source state(s): 0, 29, 35, 37, 85, 86, 91, 93, 97, 100, 104, 107, 111, 116
+ID:81   FileName                  -> 'className' *                                      LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix +string +lines +labels +points +display'
+
+Item 5 - 0x05
+Source state(s): 0, 29, 35, 37, 85, 86, 91, 93, 97, 100, 104, 107, 111, 116
+ID:80   FileName                  -> 'fileName' *                                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix +string +lines +labels +points +display'
+
+Item 6 - 0x06
+Source state(s): 0, 29, 35, 37, 85, 86, 91, 93, 97, 100, 104, 107, 111, 116
+ID:82   FileName                  -> 'msgCode' *                                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix +string +lines +labels +points +display'
+
+Item 7 - 0x07
+Source state(s): 3, 30
+ID:56   Option                    -> '-canonical' * CanonicalParam 
+ID:57   CanonicalParam            -> * '+filename' ':' FileName 
+ID:58   CanonicalParam            -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 8 - 0x08
+Source state(s): 3, 30
+ID:76   Option                    -> '-clg' * CmdLineGrammarParam 
+ID:77   CmdLineGrammarParam       -> * '+filename' ':' FileName 
+ID:78   CmdLineGrammarParam       -> * ':' FileName 
+ID:79   CmdLineGrammarParam       -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 9 - 0x09
+Source state(s): 3, 30
+ID:9    Option                    -> '-clr' *                                           LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 10 - 0x0A
+Source state(s): 3, 30
+ID:59   Option                    -> '-conflicts' * ConflictReportParamList 
+ID:60   ConflictReportParamList   -> * ConflictReportParam ConflictReportParamList 
+ID:61   ConflictReportParamList   -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:62   ConflictReportParam       -> * '+filename' FileName 
+ID:63   ConflictReportParam       -> * '+lines' 
+ID:64   ConflictReportParam       -> * '+labels' 
+ID:65   ConflictReportParam       -> * '+points' 
+
+Item 11 - 0x0B
+Source state(s): 3, 30
+ID:46   Option                    -> '-dfa' * StaticDFAParamList 
+ID:47   StaticDFAParamList        -> * StaticDFAParam StaticDFAParamList 
+ID:48   StaticDFAParamList        -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:49   StaticDFAParam            -> * '+filename' ':' FileName 
+ID:50   StaticDFAParam            -> * '+classname' ':' ClassName 
+
+Item 12 - 0x0C
+Source state(s): 3, 30
+ID:19   Option                    -> '-enumclasses' *                                   LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 13 - 0x0D
+Source state(s): 3, 30
+ID:16   Option                    -> '-enumfile' * EnumFileParam 
+ID:17   EnumFileParam             -> * '+filename' ':' FileName 
+ID:18   EnumFileParam             -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 14 - 0x0E
+Source state(s): 3, 30
+ID:20   Option                    -> '-enumstrings' *                                   LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 15 - 0x0F
+Source state(s): 3, 30
+ID:69   Option                    -> '-help' * HelpParamList 
+ID:70   HelpParamList             -> * HelpParam 
+ID:71   HelpParamList             -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:72   HelpParam                 -> * '+msg' ':' 'msgCode' 
+ID:73   HelpParam                 -> * '+option' ':' 'option' 
+
+Item 16 - 0x10
+Source state(s): 3, 30
+ID:8    Option                    -> '-lalr' *                                          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 17 - 0x11
+Source state(s): 3, 30
+ID:7    Option                    -> '-lr' *                                            LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 18 - 0x12
+Source state(s): 3, 30
+ID:27   Option                    -> '-nontermenum' * NonTermEnumParamList 
+ID:28   NonTermEnumParamList      -> * NonTermEnumParam NonTermEnumParamList 
+ID:29   NonTermEnumParamList      -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:30   NonTermEnumParam          -> * '+filename' ':' FileName 
+ID:31   NonTermEnumParam          -> * '+classname' ':' ClassName 
+ID:32   NonTermEnumParam          -> * '+prefix' ':' ClassName 
+
+Item 19 - 0x13
+Source state(s): 3, 30
+ID:67   Option                    -> '-notes' *                                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 20 - 0x14
+Source state(s): 3, 30
+ID:66   Option                    -> '-nowarnings' *                                    LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 21 - 0x15
+Source state(s): 3, 30
+ID:10   Option                    -> '-parse' * ParseDataParamList 
+ID:11   ParseDataParamList        -> * ParseDataParam ParseDataParamList 
+ID:12   ParseDataParamList        -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:13   ParseDataParam            -> * '+filename' ':' FileName 
+ID:14   ParseDataParam            -> * '+string' ':' 'string' 
+ID:15   ParseDataParam            -> * '+display' 
+
+Item 22 - 0x16
+Source state(s): 3, 30
+ID:51   Option                    -> '-parsetable' * StaticParseTableParamList 
+ID:52   StaticParseTableParamList -> * StaticParseTableParam StaticParseTableParamList 
+ID:53   StaticParseTableParamList -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:54   StaticParseTableParam     -> * '+filename' ':' FileName 
+ID:55   StaticParseTableParam     -> * '+classname' ':' ClassName 
+
+Item 23 - 0x17
+Source state(s): 3, 30
+ID:33   Option                    -> '-prodenum' * ProdEnumParamList 
+ID:34   ProdEnumParamList         -> * ProdEnumParam ProdEnumParamList 
+ID:35   ProdEnumParamList         -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:36   ProdEnumParam             -> * '+filename' ':' FileName 
+ID:37   ProdEnumParam             -> * '+classname' ':' ClassName 
+ID:38   ProdEnumParam             -> * '+prefix' ':' ClassName 
+
+Item 24 - 0x18
+Source state(s): 3, 30
+ID:74   Option                    -> '-quiet' *                                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 25 - 0x19
+Source state(s): 3, 30
+ID:39   Option                    -> '-reducefunc' * ReduceFuncParamList 
+ID:40   ReduceFuncParamList       -> * ReduceFuncParam ReduceFuncParamList 
+ID:41   ReduceFuncParamList       -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:42   ReduceFuncParam           -> * '+filename' ':' FileName 
+ID:43   ReduceFuncParam           -> * '+classname' ':' ClassName 
+ID:44   ReduceFuncParam           -> * '+stackname' ':' ClassName 
+ID:45   ReduceFuncParam           -> * '+prefix' ':' ClassName 
+
+Item 26 - 0x1A
+Source state(s): 3, 30
+ID:68   Option                    -> '-stats' *                                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 27 - 0x1B
+Source state(s): 3, 30
+ID:21   Option                    -> '-termenum' * TermEnumParamList 
+ID:22   TermEnumParamList         -> * TermEnumParam TermEnumParamList 
+ID:23   TermEnumParamList         -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:24   TermEnumParam             -> * '+filename' ':' FileName 
+ID:25   TermEnumParam             -> * '+classname' ':' ClassName 
+ID:26   TermEnumParam             -> * '+prefix' ':' ClassName 
+
+Item 28 - 0x1C
+Source state(s): 3, 30
+ID:75   Option                    -> '-version' *                                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 29 - 0x1D
+Source state(s): 3, 30
+ID:6    Option                    -> '@' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 30 - 0x1E
+Source state(s): 3, 30
+ID:4    OptionList                -> Option * OptionList 
+ID:4    OptionList                -> * Option OptionList 
+ID:5    OptionList                -> *                                                  LA: 'EOF'
+ID:6    Option                    -> * '@' FileName 
+ID:7    Option                    -> * '-lr' 
+ID:8    Option                    -> * '-lalr' 
+ID:9    Option                    -> * '-clr' 
+ID:10   Option                    -> * '-parse' ParseDataParamList 
+ID:16   Option                    -> * '-enumfile' EnumFileParam 
+ID:19   Option                    -> * '-enumclasses' 
+ID:20   Option                    -> * '-enumstrings' 
+ID:21   Option                    -> * '-termenum' TermEnumParamList 
+ID:27   Option                    -> * '-nontermenum' NonTermEnumParamList 
+ID:33   Option                    -> * '-prodenum' ProdEnumParamList 
+ID:39   Option                    -> * '-reducefunc' ReduceFuncParamList 
+ID:46   Option                    -> * '-dfa' StaticDFAParamList 
+ID:51   Option                    -> * '-parsetable' StaticParseTableParamList 
+ID:56   Option                    -> * '-canonical' CanonicalParam 
+ID:59   Option                    -> * '-conflicts' ConflictReportParamList 
+ID:66   Option                    -> * '-nowarnings' 
+ID:67   Option                    -> * '-notes' 
+ID:68   Option                    -> * '-stats' 
+ID:69   Option                    -> * '-help' HelpParamList 
+ID:74   Option                    -> * '-quiet' 
+ID:75   Option                    -> * '-version' 
+ID:76   Option                    -> * '-clg' CmdLineGrammarParam 
+
+Item 31 - 0x1F
+Source state(s): 3
+ID:1    CmdLine                   -> FileNameOption OptionList *                        LA: 'EOF'
+
+Item 32 - 0x20
+Source state(s): 7
+ID:57   CanonicalParam            -> '+filename' * ':' FileName 
+
+Item 33 - 0x21
+Source state(s): 7
+ID:56   Option                    -> '-canonical' CanonicalParam *                      LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 34 - 0x22
+Source state(s): 8
+ID:77   CmdLineGrammarParam       -> '+filename' * ':' FileName 
+
+Item 35 - 0x23
+Source state(s): 8
+ID:78   CmdLineGrammarParam       -> ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 36 - 0x24
+Source state(s): 8
+ID:76   Option                    -> '-clg' CmdLineGrammarParam *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 37 - 0x25
+Source state(s): 10, 41
+ID:62   ConflictReportParam       -> '+filename' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 38 - 0x26
+Source state(s): 10, 41
+ID:64   ConflictReportParam       -> '+labels' *                                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +lines +labels +points'
+
+Item 39 - 0x27
+Source state(s): 10, 41
+ID:63   ConflictReportParam       -> '+lines' *                                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +lines +labels +points'
+
+Item 40 - 0x28
+Source state(s): 10, 41
+ID:65   ConflictReportParam       -> '+points' *                                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +lines +labels +points'
+
+Item 41 - 0x29
+Source state(s): 10, 41
+ID:60   ConflictReportParamList   -> ConflictReportParam * ConflictReportParamList 
+ID:60   ConflictReportParamList   -> * ConflictReportParam ConflictReportParamList 
+ID:61   ConflictReportParamList   -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:62   ConflictReportParam       -> * '+filename' FileName 
+ID:63   ConflictReportParam       -> * '+lines' 
+ID:64   ConflictReportParam       -> * '+labels' 
+ID:65   ConflictReportParam       -> * '+points' 
+
+Item 42 - 0x2A
+Source state(s): 10
+ID:59   Option                    -> '-conflicts' ConflictReportParamList *             LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 43 - 0x2B
+Source state(s): 11, 45
+ID:50   StaticDFAParam            -> '+classname' * ':' ClassName 
+
+Item 44 - 0x2C
+Source state(s): 11, 45
+ID:49   StaticDFAParam            -> '+filename' * ':' FileName 
+
+Item 45 - 0x2D
+Source state(s): 11, 45
+ID:47   StaticDFAParamList        -> StaticDFAParam * StaticDFAParamList 
+ID:47   StaticDFAParamList        -> * StaticDFAParam StaticDFAParamList 
+ID:48   StaticDFAParamList        -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:49   StaticDFAParam            -> * '+filename' ':' FileName 
+ID:50   StaticDFAParam            -> * '+classname' ':' ClassName 
+
+Item 46 - 0x2E
+Source state(s): 11
+ID:46   Option                    -> '-dfa' StaticDFAParamList *                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 47 - 0x2F
+Source state(s): 13
+ID:17   EnumFileParam             -> '+filename' * ':' FileName 
+
+Item 48 - 0x30
+Source state(s): 13
+ID:16   Option                    -> '-enumfile' EnumFileParam *                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 49 - 0x31
+Source state(s): 15
+ID:72   HelpParam                 -> '+msg' * ':' 'msgCode' 
+
+Item 50 - 0x32
+Source state(s): 15
+ID:73   HelpParam                 -> '+option' * ':' 'option' 
+
+Item 51 - 0x33
+Source state(s): 15
+ID:70   HelpParamList             -> HelpParam *                                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 52 - 0x34
+Source state(s): 15
+ID:69   Option                    -> '-help' HelpParamList *                            LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 53 - 0x35
+Source state(s): 18, 56
+ID:31   NonTermEnumParam          -> '+classname' * ':' ClassName 
+
+Item 54 - 0x36
+Source state(s): 18, 56
+ID:30   NonTermEnumParam          -> '+filename' * ':' FileName 
+
+Item 55 - 0x37
+Source state(s): 18, 56
+ID:32   NonTermEnumParam          -> '+prefix' * ':' ClassName 
+
+Item 56 - 0x38
+Source state(s): 18, 56
+ID:28   NonTermEnumParamList      -> NonTermEnumParam * NonTermEnumParamList 
+ID:28   NonTermEnumParamList      -> * NonTermEnumParam NonTermEnumParamList 
+ID:29   NonTermEnumParamList      -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:30   NonTermEnumParam          -> * '+filename' ':' FileName 
+ID:31   NonTermEnumParam          -> * '+classname' ':' ClassName 
+ID:32   NonTermEnumParam          -> * '+prefix' ':' ClassName 
+
+Item 57 - 0x39
+Source state(s): 18
+ID:27   Option                    -> '-nontermenum' NonTermEnumParamList *              LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 58 - 0x3A
+Source state(s): 21, 61
+ID:15   ParseDataParam            -> '+display' *                                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +string +display'
+
+Item 59 - 0x3B
+Source state(s): 21, 61
+ID:13   ParseDataParam            -> '+filename' * ':' FileName 
+
+Item 60 - 0x3C
+Source state(s): 21, 61
+ID:14   ParseDataParam            -> '+string' * ':' 'string' 
+
+Item 61 - 0x3D
+Source state(s): 21, 61
+ID:11   ParseDataParamList        -> ParseDataParam * ParseDataParamList 
+ID:11   ParseDataParamList        -> * ParseDataParam ParseDataParamList 
+ID:12   ParseDataParamList        -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:13   ParseDataParam            -> * '+filename' ':' FileName 
+ID:14   ParseDataParam            -> * '+string' ':' 'string' 
+ID:15   ParseDataParam            -> * '+display' 
+
+Item 62 - 0x3E
+Source state(s): 21
+ID:10   Option                    -> '-parse' ParseDataParamList *                      LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 63 - 0x3F
+Source state(s): 22, 65
+ID:55   StaticParseTableParam     -> '+classname' * ':' ClassName 
+
+Item 64 - 0x40
+Source state(s): 22, 65
+ID:54   StaticParseTableParam     -> '+filename' * ':' FileName 
+
+Item 65 - 0x41
+Source state(s): 22, 65
+ID:52   StaticParseTableParamList -> StaticParseTableParam * StaticParseTableParamList 
+ID:52   StaticParseTableParamList -> * StaticParseTableParam StaticParseTableParamList 
+ID:53   StaticParseTableParamList -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:54   StaticParseTableParam     -> * '+filename' ':' FileName 
+ID:55   StaticParseTableParam     -> * '+classname' ':' ClassName 
+
+Item 66 - 0x42
+Source state(s): 22
+ID:51   Option                    -> '-parsetable' StaticParseTableParamList *          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 67 - 0x43
+Source state(s): 23, 70
+ID:37   ProdEnumParam             -> '+classname' * ':' ClassName 
+
+Item 68 - 0x44
+Source state(s): 23, 70
+ID:36   ProdEnumParam             -> '+filename' * ':' FileName 
+
+Item 69 - 0x45
+Source state(s): 23, 70
+ID:38   ProdEnumParam             -> '+prefix' * ':' ClassName 
+
+Item 70 - 0x46
+Source state(s): 23, 70
+ID:34   ProdEnumParamList         -> ProdEnumParam * ProdEnumParamList 
+ID:34   ProdEnumParamList         -> * ProdEnumParam ProdEnumParamList 
+ID:35   ProdEnumParamList         -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:36   ProdEnumParam             -> * '+filename' ':' FileName 
+ID:37   ProdEnumParam             -> * '+classname' ':' ClassName 
+ID:38   ProdEnumParam             -> * '+prefix' ':' ClassName 
+
+Item 71 - 0x47
+Source state(s): 23
+ID:33   Option                    -> '-prodenum' ProdEnumParamList *                    LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 72 - 0x48
+Source state(s): 25, 76
+ID:43   ReduceFuncParam           -> '+classname' * ':' ClassName 
+
+Item 73 - 0x49
+Source state(s): 25, 76
+ID:42   ReduceFuncParam           -> '+filename' * ':' FileName 
+
+Item 74 - 0x4A
+Source state(s): 25, 76
+ID:45   ReduceFuncParam           -> '+prefix' * ':' ClassName 
+
+Item 75 - 0x4B
+Source state(s): 25, 76
+ID:44   ReduceFuncParam           -> '+stackname' * ':' ClassName 
+
+Item 76 - 0x4C
+Source state(s): 25, 76
+ID:40   ReduceFuncParamList       -> ReduceFuncParam * ReduceFuncParamList 
+ID:40   ReduceFuncParamList       -> * ReduceFuncParam ReduceFuncParamList 
+ID:41   ReduceFuncParamList       -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:42   ReduceFuncParam           -> * '+filename' ':' FileName 
+ID:43   ReduceFuncParam           -> * '+classname' ':' ClassName 
+ID:44   ReduceFuncParam           -> * '+stackname' ':' ClassName 
+ID:45   ReduceFuncParam           -> * '+prefix' ':' ClassName 
+
+Item 77 - 0x4D
+Source state(s): 25
+ID:39   Option                    -> '-reducefunc' ReduceFuncParamList *                LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 78 - 0x4E
+Source state(s): 27, 81
+ID:25   TermEnumParam             -> '+classname' * ':' ClassName 
+
+Item 79 - 0x4F
+Source state(s): 27, 81
+ID:24   TermEnumParam             -> '+filename' * ':' FileName 
+
+Item 80 - 0x50
+Source state(s): 27, 81
+ID:26   TermEnumParam             -> '+prefix' * ':' ClassName 
+
+Item 81 - 0x51
+Source state(s): 27, 81
+ID:22   TermEnumParamList         -> TermEnumParam * TermEnumParamList 
+ID:22   TermEnumParamList         -> * TermEnumParam TermEnumParamList 
+ID:23   TermEnumParamList         -> *                                                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+ID:24   TermEnumParam             -> * '+filename' ':' FileName 
+ID:25   TermEnumParam             -> * '+classname' ':' ClassName 
+ID:26   TermEnumParam             -> * '+prefix' ':' ClassName 
+
+Item 82 - 0x52
+Source state(s): 27
+ID:21   Option                    -> '-termenum' TermEnumParamList *                    LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 83 - 0x53
+Source state(s): 29
+ID:6    Option                    -> '@' FileName *                                     LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 84 - 0x54
+Source state(s): 30
+ID:4    OptionList                -> Option OptionList *                                LA: 'EOF'
+
+Item 85 - 0x55
+Source state(s): 32
+ID:57   CanonicalParam            -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 86 - 0x56
+Source state(s): 34
+ID:77   CmdLineGrammarParam       -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 87 - 0x57
+Source state(s): 35
+ID:78   CmdLineGrammarParam       -> ':' FileName *                                     LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 88 - 0x58
+Source state(s): 37
+ID:62   ConflictReportParam       -> '+filename' FileName *                             LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +lines +labels +points'
+
+Item 89 - 0x59
+Source state(s): 41
+ID:60   ConflictReportParamList   -> ConflictReportParam ConflictReportParamList *      LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 90 - 0x5A
+Source state(s): 43
+ID:50   StaticDFAParam            -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 91 - 0x5B
+Source state(s): 44
+ID:49   StaticDFAParam            -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 92 - 0x5C
+Source state(s): 45
+ID:47   StaticDFAParamList        -> StaticDFAParam StaticDFAParamList *                LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 93 - 0x5D
+Source state(s): 47
+ID:17   EnumFileParam             -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 94 - 0x5E
+Source state(s): 49
+ID:72   HelpParam                 -> '+msg' ':' * 'msgCode' 
+
+Item 95 - 0x5F
+Source state(s): 50
+ID:73   HelpParam                 -> '+option' ':' * 'option' 
+
+Item 96 - 0x60
+Source state(s): 53
+ID:31   NonTermEnumParam          -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 97 - 0x61
+Source state(s): 54
+ID:30   NonTermEnumParam          -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 98 - 0x62
+Source state(s): 55
+ID:32   NonTermEnumParam          -> '+prefix' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 99 - 0x63
+Source state(s): 56
+ID:28   NonTermEnumParamList      -> NonTermEnumParam NonTermEnumParamList *            LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 100 - 0x64
+Source state(s): 59
+ID:13   ParseDataParam            -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 101 - 0x65
+Source state(s): 60
+ID:14   ParseDataParam            -> '+string' ':' * 'string' 
+
+Item 102 - 0x66
+Source state(s): 61
+ID:11   ParseDataParamList        -> ParseDataParam ParseDataParamList *                LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 103 - 0x67
+Source state(s): 63
+ID:55   StaticParseTableParam     -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 104 - 0x68
+Source state(s): 64
+ID:54   StaticParseTableParam     -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 105 - 0x69
+Source state(s): 65
+ID:52   StaticParseTableParamList -> StaticParseTableParam StaticParseTableParamList *  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 106 - 0x6A
+Source state(s): 67
+ID:37   ProdEnumParam             -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 107 - 0x6B
+Source state(s): 68
+ID:36   ProdEnumParam             -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 108 - 0x6C
+Source state(s): 69
+ID:38   ProdEnumParam             -> '+prefix' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 109 - 0x6D
+Source state(s): 70
+ID:34   ProdEnumParamList         -> ProdEnumParam ProdEnumParamList *                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 110 - 0x6E
+Source state(s): 72
+ID:43   ReduceFuncParam           -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 111 - 0x6F
+Source state(s): 73
+ID:42   ReduceFuncParam           -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 112 - 0x70
+Source state(s): 74
+ID:45   ReduceFuncParam           -> '+prefix' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 113 - 0x71
+Source state(s): 75
+ID:44   ReduceFuncParam           -> '+stackname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 114 - 0x72
+Source state(s): 76
+ID:40   ReduceFuncParamList       -> ReduceFuncParam ReduceFuncParamList *              LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 115 - 0x73
+Source state(s): 78
+ID:25   TermEnumParam             -> '+classname' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 116 - 0x74
+Source state(s): 79
+ID:24   TermEnumParam             -> '+filename' ':' * FileName 
+ID:80   FileName                  -> * 'fileName' 
+ID:81   FileName                  -> * 'className' 
+ID:82   FileName                  -> * 'msgCode' 
+
+Item 117 - 0x75
+Source state(s): 80
+ID:26   TermEnumParam             -> '+prefix' ':' * ClassName 
+ID:83   ClassName                 -> * 'className' 
+ID:84   ClassName                 -> * 'msgCode' 
+
+Item 118 - 0x76
+Source state(s): 81
+ID:22   TermEnumParamList         -> TermEnumParam TermEnumParamList *                  LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 119 - 0x77
+Source state(s): 85
+ID:57   CanonicalParam            -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 120 - 0x78
+Source state(s): 86
+ID:77   CmdLineGrammarParam       -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 121 - 0x79
+Source state(s): 90
+ID:50   StaticDFAParam            -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname'
+
+Item 122 - 0x7A
+Source state(s): 90, 96, 98, 103, 106, 108, 110, 112, 113, 115, 117
+ID:83   ClassName                 -> 'className' *                                      LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 123 - 0x7B
+Source state(s): 90, 96, 98, 103, 106, 108, 110, 112, 113, 115, 117
+ID:84   ClassName                 -> 'msgCode' *                                        LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 124 - 0x7C
+Source state(s): 91
+ID:49   StaticDFAParam            -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname'
+
+Item 125 - 0x7D
+Source state(s): 93
+ID:17   EnumFileParam             -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 126 - 0x7E
+Source state(s): 94
+ID:72   HelpParam                 -> '+msg' ':' 'msgCode' *                             LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 127 - 0x7F
+Source state(s): 95
+ID:73   HelpParam                 -> '+option' ':' 'option' *                           LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg'
+
+Item 128 - 0x80
+Source state(s): 96
+ID:31   NonTermEnumParam          -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 129 - 0x81
+Source state(s): 97
+ID:30   NonTermEnumParam          -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 130 - 0x82
+Source state(s): 98
+ID:32   NonTermEnumParam          -> '+prefix' ':' ClassName *                          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 131 - 0x83
+Source state(s): 100
+ID:13   ParseDataParam            -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +string +display'
+
+Item 132 - 0x84
+Source state(s): 101
+ID:14   ParseDataParam            -> '+string' ':' 'string' *                           LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +string +display'
+
+Item 133 - 0x85
+Source state(s): 103
+ID:55   StaticParseTableParam     -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname'
+
+Item 134 - 0x86
+Source state(s): 104
+ID:54   StaticParseTableParam     -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname'
+
+Item 135 - 0x87
+Source state(s): 106
+ID:37   ProdEnumParam             -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 136 - 0x88
+Source state(s): 107
+ID:36   ProdEnumParam             -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 137 - 0x89
+Source state(s): 108
+ID:38   ProdEnumParam             -> '+prefix' ':' ClassName *                          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 138 - 0x8A
+Source state(s): 110
+ID:43   ReduceFuncParam           -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 139 - 0x8B
+Source state(s): 111
+ID:42   ReduceFuncParam           -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 140 - 0x8C
+Source state(s): 112
+ID:45   ReduceFuncParam           -> '+prefix' ':' ClassName *                          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 141 - 0x8D
+Source state(s): 113
+ID:44   ReduceFuncParam           -> '+stackname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +stackname +prefix'
+
+Item 142 - 0x8E
+Source state(s): 115
+ID:25   TermEnumParam             -> '+classname' ':' ClassName *                       LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 143 - 0x8F
+Source state(s): 116
+ID:24   TermEnumParam             -> '+filename' ':' FileName *                         LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'
+
+Item 144 - 0x90
+Source state(s): 117
+ID:26   TermEnumParam             -> '+prefix' ':' ClassName *                          LA: 'EOF @ -lr -lalr -clr -parse -enumfile -enumclasses -enumstrings -termenum -nontermenum -prodenum -reducefunc -dfa -parsetable -canonical -conflicts -nowarnings -notes -stats -help -quiet -version -clg +filename +classname +prefix'

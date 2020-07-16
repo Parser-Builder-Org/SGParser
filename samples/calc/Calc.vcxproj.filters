@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Calc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CalcParser.hpp" />
+    <ClInclude Include="src\StdStreamAdapter.hpp" />
+    <ClInclude Include="generated\DFA.h">
+      <Filter>generated</Filter>
+    </ClInclude>
+    <ClInclude Include="generated\ParseTable.h">
+      <Filter>generated</Filter>
+    </ClInclude>
+    <ClInclude Include="generated\ProdEnum.h">
+      <Filter>generated</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Calc.gr" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\test-expressions.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="generated">
+      <UniqueIdentifier>{dd37a565-17c1-4b98-931b-3190917f92af}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

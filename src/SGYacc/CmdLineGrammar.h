@@ -1,0 +1,313 @@
+// Filename:  CmdLineGrammar.h
+// Content:   The command line options grammar that gets embedded into executable.
+// Provided AS IS under MIT License; see LICENSE file in root folder.
+
+#ifndef INC_SGPARSER_GENERATOR_YACC_CMDLINEGRAMMAR_H
+#define INC_SGPARSER_GENERATOR_YACC_CMDLINEGRAMMAR_H
+
+#include "SGString.h"
+
+namespace SGParser {
+namespace Generator {
+namespace Yacc {
+
+inline String const cmdLineGrammar = R"~grammar(
+//-------------------------------------------------------------------------------
+// Macros
+//-------------------------------------------------------------------------------
+%macro
+
+{whitespace}        '[ \t\r\n]';                // White space, tabs and carriage returns
+{digit}             '[0-9]';                    // Numeric digit
+{char}              '[a-zA-Z]';                 // Alphabetic character
+{value}             '{char}|{digit}';           // Character or digit
+{op_prefix}         '\-';                       // Option prefix
+{pr_prefix}         '\+';                       // Parameter prefix
+
+
+//-------------------------------------------------------------------------------
+// Main expression list
+//-------------------------------------------------------------------------------
+%expression Main
+
+'{whitespace}'                                              %ignore;                                        // Ignore white space
+
+'L?\"'                                                      %ignore, %push StringLiteral;                   // Allow for strings
+
+'{op_prefix}{char}+'                                        option,             'option';                   // Option
+'{pr_prefix}{char}+'                                        parameter,          'param';                    // Parameter
+'{digit}*'                                                  integer,            'integer';                  // Integer value
+'({value}|(_)|(\.\./)|(/)|(\.))+'                           fileName,           'fileName';                 // Standard filename w/ path
+'({char}|\_)+({value}|\_|(\:\:))*'                          className,          'className';                // C++ Classname
+
+'{char}{char}{value}{value}{value}{value}{char}'            msgCode,            'msg';                      // Message code (YC0001E)
+
+'\:'                                                        colon,              ':';
+
+//----------------------------------------
+// Options
+// - can be both upper and lower case
+//----------------------------------------
+
+'\@'                                                        opConfigFile,       '@';                        // Uses the configuration file
+
+'\-[lL][rR]'                                                opTableTypeLR,      '-lr';
+'\-[lL][aA][lL][rR]'                                        opTableTypeLALR,    '-lalr';
+'\-[cC][lL][rR]'                                            opTableTypeCLR,     '-clr';
+
+'\-([pP]|([pP][aA][rR][sS][eE]))'                           opParseData,        '-parse';                   // Parse a test data string/file
+'\-[eE][nN][uU][mM][fF][iI][lL][eE]'                        opEnumFile,         '-enumfile';                // Global enumeration filename
+'\-[eE][nN][uU][mM][cC][lL][aA][sS][sS][eE][sS]'            opEnumClasses,      '-enumclasses';             // Use 'enum class' instead of 'enum'
+'\-[eE][nN][uU][mM][sS][tT][rR][iI][nN][gG][sS]'            opEnumStrings,      '-enumstrings';             // Create string literals for enumeration stringification
+'\-[tT][eE][rR][mM][eE][nN][uU][mM]'                        opTermEnum,         '-termenum';                // Writes out an enumeration of terminals
+'\-[nN][oO][nN][tT][eE][rR][mM][eE][nN][uU][mM]'            opNonTermEnum,      '-nontermenum';             // Writes out an enumeration of nonterminals
+'\-[pP][rR][oO][dD][eE][nN][uU][mM]'                        opProdEnum,         '-prodenum';                // Writes out production enumeration
+'\-(([rR][fF])|([rR][eE][dD][uU][cC][eE][fF][uU][nN][cC]))' opReduceFunc,       '-reducefunc';              // Writes out the reduce function
+'\-[dD][fF][aA]'                                            opStaticDFA,        '-dfa';                     // Create a static DFA structure
+'\-(([pP][tT])|([pP][aA][rR][sS][eE][tT][aA][bB][lL][eE]))' opStaticParseTable, '-parsetable';              // Create a static ParseTable structure
+'\-(([cC][dD])|([cC][aA][nN][oO][nN][iI][cC][aA][lL]))'     opCanonical,        '-canonical';               // Output the Canonical debug data
+'\-(([cC][rR])|([cC][oO][nN][fF][lL][iI][cC][tT][sS]))'     opConflictReport,   '-conflicts';               // Output the Conflict report
+'\-[nN][oO][wW][aA][rR][nN][iI][nN][gG][sS]'                opNoWarnings,       '-nowarnings';              // Control the message handling
+'\-[nN][oO][tT][eE][sS]'                                    opNotes,            '-notes';                   // Control the message handling
+'\-[sS][tT][aA][tT][sS]'                                    opStats,            '-stats';                   // Control the message handling
+'\-(\?|[hH]|([hH][eE][lL][pP]))'                            opHelp,             '-help';                    // Display help (generic and specific)
+'\-([qQ]|([qQ][uU][iI][eE][tT]))'                           opQuietMode,        '-quiet';                   // Prevents screen output
+'\-([vV]|([vV][eE][rR])|([vV][eE][rR][sS][iI][oO][nN]))'    opVersion,          '-version';                 // Displays the program version
+'\-[cC][lL][gG]'                                            opCLGrammar,        '-clg';                     // Writes out the command line grammar
+
+
+//----------------------------------------
+// Option Parameters
+//----------------------------------------
+
+'\+([fF]|([fF][iI][lL][eE][nN][aA][mM][eE]))'               fileNameParam,      '+filename';
+'\+([cC]|([cC][lL][aA][sS][sS][nN][aA][mM][eE]))'           classNameParam,     '+classname';
+'\+([sS]|([sS][tT][aA][cC][kK][nN][aA][mM][eE]))'           stackNameParam,     '+stackname';
+'\+([pP]|([pP][rR][eE][fF][iI][xX]))'                       prefixParam,        '+prefix';
+
+'\+(([sS][tT][rR])|([sS][tT][rR][iI][nN][gG]))'             stringParam,        '+string';
+
+'\+([oO][pP][tT][iI][oO][nN])'                              optionParam,        '+option';
+'\+([mM][sS][gG])'                                          messageParam,       '+msg';
+'\+([dD][fF][aA])'                                          dfaParam,           '+dfa';
+'\+[lL][iI][nN][eE][sS]'                                    linesParam,         '+lines';
+'\+[lL][aA][bB][eE][lL][sS]'                                labelsParam,        '+labels';
+'\+[pP][oO][iI][nN][tT][sS]'                                pointsParam,        '+points';
+
+'\+([dD]|([dD][iI][sS][pP][lL][aA][yY]))'                   displayParam,       '+display';
+
+
+%expression StringLiteral
+'([^\n\"]*(\\\")?[^\n\"]*)+'    string, 'str';
+'\"'                            %ignore, %pop;
+
+
+//-------------------------------------------------------------------------------
+// Grammar
+//-------------------------------------------------------------------------------
+%production CmdLine
+
+
+CmdLineExp                          CmdLine                     -> FileNameOption OptionList;
+
+GrammarNameExp                      FileNameOption              -> FileName;
+EmptyGrammarNameExp                 FileNameOption              -> ;
+
+OptionListExp                       OptionList                  -> Option OptionList;
+EmptyOptionListExp                  OptionList                  -> ;
+
+
+// ***** Options
+
+// *** Configuration file
+
+ConfigFileOption                    Option                      -> '@' FileName;
+
+
+// *** Parse table type
+
+TableTypeLROption                   Option                      -> '-lr';
+TableTypeLALROption                 Option                      -> '-lalr';
+TableTypeCLROption                  Option                      -> '-clr';
+
+
+// *** Parse test data
+
+ParseDataOption                     Option                      -> '-parse' ParseDataParamList;
+
+ParseDataParamList                  ParseDataParamList          -> ParseDataParam ParseDataParamList;
+ParseDataParamListEmpty             ParseDataParamList          -> ;
+
+ParseDataFileNameParam              ParseDataParam              -> '+filename' ':' FileName;
+ParseDataStringParam                ParseDataParam              -> '+string' ':' string;
+ParseDataDisplayParam               ParseDataParam              -> '+display';
+
+// *** EnumFile
+
+EnumFileOption                      Option                      -> '-enumfile' EnumFileParam;
+
+EnumFileFileNameParam               EnumFileParam               -> '+filename' ':' FileName;
+EnumFileFileNameParamEmpty          EnumFileParam               -> ;
+
+
+// *** Enum classes
+
+EnumClassesOption                   Option                      -> '-enumclasses';
+
+
+// *** Enum strings
+
+EnumStringsOption                   Option                      -> '-enumstrings';
+
+
+// *** Term enumeration
+
+TermEnumOption                      Option                      -> '-termenum' TermEnumParamList;
+
+TermEnumParamList                   TermEnumParamList           -> TermEnumParam TermEnumParamList;
+TermEnumParamListEmpty              TermEnumParamList           -> ;
+
+TermEnumFileNameParam               TermEnumParam               -> '+filename' ':' FileName;
+TermEnumClassNameParam              TermEnumParam               -> '+classname' ':' ClassName;
+TermEnumPrefixParam                 TermEnumParam               -> '+prefix' ':' ClassName;
+
+
+// *** NonTerminal enumeration
+
+NonTermEnumOption                   Option                      -> '-nontermenum' NonTermEnumParamList;
+
+NonTermEnumParamList                NonTermEnumParamList        -> NonTermEnumParam NonTermEnumParamList;
+NonTermEnumParamListEmpty           NonTermEnumParamList        -> ;
+
+NonTermEnumFileNameParam            NonTermEnumParam            -> '+filename' ':' FileName;
+NonTermEnumClassNameParam           NonTermEnumParam            -> '+classname' ':' ClassName;
+NonTermEnumPrefixParam              NonTermEnumParam            -> '+prefix' ':' ClassName;
+
+
+// *** Production enumeration
+
+ProdEnumOption                      Option                      -> '-prodenum' ProdEnumParamList;
+
+ProdEnumParamList                   ProdEnumParamList           -> ProdEnumParam ProdEnumParamList;
+ProdEnumParamListEmpty              ProdEnumParamList           -> ;
+
+ProdEnumFileNameParam               ProdEnumParam               -> '+filename' ':' FileName;
+ProdEnumClassNameParam              ProdEnumParam               -> '+classname' ':' ClassName;
+ProdEnumPrefixParam                 ProdEnumParam               -> '+prefix' ':' ClassName;
+
+
+// *** Reduce function
+
+ReduceFuncOption                    Option                      -> '-reducefunc' ReduceFuncParamList;
+
+ReduceFuncParamList                 ReduceFuncParamList         -> ReduceFuncParam ReduceFuncParamList;
+ReduceFuncParamListEmpty            ReduceFuncParamList         -> ;
+
+ReduceFuncFileNameParam             ReduceFuncParam             -> '+filename' ':' FileName;
+ReduceFuncClassNameParam            ReduceFuncParam             -> '+classname' ':' ClassName;
+ReduceFuncStackNameParam            ReduceFuncParam             -> '+stackname' ':' ClassName;
+ReduceFuncPrefixParam               ReduceFuncParam             -> '+prefix' ':' ClassName;
+
+
+// *** StaticDFA
+
+StaticDFAOption                     Option                      -> '-dfa' StaticDFAParamList;
+
+StaticDFAParamList                  StaticDFAParamList          -> StaticDFAParam StaticDFAParamList;
+StaticDFAParamListEmpty             StaticDFAParamList          -> ;
+
+StaticDFAFileNameParam              StaticDFAParam              -> '+filename' ':' FileName;
+StaticDFAClassNameParam             StaticDFAParam              -> '+classname' ':' ClassName;
+
+// *** StaticParseTable
+
+StaticParseTableOption              Option                      -> '-parsetable' StaticParseTableParamList;
+
+StaticParseTableParamList           StaticParseTableParamList   -> StaticParseTableParam StaticParseTableParamList;
+StaticParseTableParamListEmpty      StaticParseTableParamList   -> ;
+
+StaticParseTableFileNameParam       StaticParseTableParam       -> '+filename' ':' FileName;
+StaticParseTableClassNameParam      StaticParseTableParam       -> '+classname' ':' ClassName;
+
+
+// *** Canonical
+
+CanonicalOption                     Option                      -> '-canonical' CanonicalParam;
+
+CanonicalFileNameParam              CanonicalParam              -> '+filename' ':' FileName;
+CanonicalFileNameParamEmpty         CanonicalParam              -> ;
+
+
+// *** Conflict report
+
+ConflictReportOption                Option                      -> '-conflicts' ConflictReportParamList;
+
+ConflictReportParamList             ConflictReportParamList     -> ConflictReportParam ConflictReportParamList;
+ConflictReportParamListEmpty        ConflictReportParamList     -> ;
+
+ConflictReportFileNameParam         ConflictReportParam         -> '+filename' FileName;
+ConflictReportLinesParam            ConflictReportParam         -> '+lines';
+ConflictReportLabelsParam           ConflictReportParam         -> '+labels';
+ConflictReportPointsParam           ConflictReportParam         -> '+points';
+
+
+// *** Warning
+
+WarningOption                       Option                      -> '-nowarnings';
+
+
+// *** Notes
+
+NotesOption                         Option                      -> '-notes';
+
+
+// *** Stats
+
+StatsOption                         Option                      -> '-stats';
+
+
+// *** Help
+
+HelpOption                          Option                      -> '-help' HelpParamList;
+
+HelpParamList                       HelpParamList               -> HelpParam;
+HelpParamListEmpty                  HelpParamList               -> ;
+
+HelpMessageParam                    HelpParam                   -> '+msg' ':' msgCode;
+HelpOptionParam                     HelpParam                   -> '+option' ':' option;
+
+
+// *** Quiet mode
+
+QuietModeOption                     Option                      -> '-quiet';
+
+
+// *** Version
+
+VersionOption                       Option                      -> '-version';
+
+
+// *** Command line grammar
+
+CmdLineGrammarOption                Option                      -> '-clg' CmdLineGrammarParam;
+
+CmdLineGrammarFileNameParam1        CmdLineGrammarParam         -> '+filename' ':' FileName;
+CmdLineGrammarFileNameParam2        CmdLineGrammarParam         -> ':' FileName;
+CmdLineGrammarFileNameParamEmpty    CmdLineGrammarParam         -> ;
+
+
+// *** Misc
+
+FileName1                           FileName                    -> fileName;
+FileName2                           FileName                    -> className;
+FileName3                           FileName                    -> msgCode;
+
+ClassName1                          ClassName                   -> className;
+ClassName2                          ClassName                   -> msgCode;
+)~grammar";
+
+} // namespace Yacc
+} // namespace Generator
+} // namespace SGParser
+
+#endif // INC_SGPARSER_GENERATOR_YACC_CMDLINEGRAMMAR_H

@@ -1,0 +1,22 @@
+# Ignore useless system files
+.DS_Store
+# Ignore compiler/IDE generated files/folders
+*.obj
+*.tlog
+*.pdb
+*.idb
+*.opensdf
+*.ilk
+*.VC.db
+*.vcxproj.user
+.vs/
+.vscode/
+# Ignore build directories
+SGParser/build/
+XCompiler/build/
+# Ignore test output
+SGParser/tests/smoke/*/Output/
+# Ignore JetBrains files
+.idea
+#ignore CMake build artefacts
+cmake-build-*/

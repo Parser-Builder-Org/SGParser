@@ -1,0 +1,447 @@
+%macro
+//
+// Trigraph sequences
+//
+{or}                    '(\||(\?\?!))';
+{pnd}                   '(#|(\?\?=))';
+{bks}                   '(\\|(\?\?/))';
+{hat}                   '(\^|(\?\?''))';
+{obr}                   '(\[|(\?\?\())';
+{cbr}                   '(\]|(\?\?\)))';
+{ocu}                   '(\{|(\?\?<))';
+{ccu}                   '(\}|(\?\?>))';
+{not}                   '(~|(\?\?\-))';
+
+{pp}                    '[\t ]*{pnd}[\t ]*';
+{exp}                   '(([eE][0-9]+)?)';
+{fltsuf}                '(([lL]|[fF])?)';
+{intsuf}                '(([lL]?[uU]?)|([uU]?[lL]?))';
+
+%expression Main
+
+//
+// Constants
+//
+'[ \t]+'                            %ignore;
+'\n'                                Eol,        'eol';
+'[a-z_A-Z][a-z_A-Z0-9]*'            Typedefnme, 'TYPEDEFname';
+'[a-z_A-Z][a-z_A-Z0-9]*'            Id,         'IDENTIFIER';
+'0[0-7]*{intsuf}'                   Oct,        'OCTALconstant';
+'[1-9][0-9]*{intsuf}'               Dec,        'INTEGERconstant';
+'0[xX][a-fA-F0-9]+{intsuf}'         Hex,        'HEXconstant';
+'[0-9]+\.[0-9]*{exp}{fltsuf}'       Float0,     'FLOATINGconstant0';
+'[0-9]*\.[0-9]+{exp}{fltsuf}'       Float1,     'FLOATINGconstant1';
+'[0-9]+[eE][0-9]+{fltsuf}'          Float2,     'FLOATINGconstant2';
+'L?''{bks}[0-7]{1,3}'''             COct,       'CHARACTERoctConstant';
+'L?''{bks}[xX][a-fA-F0-9]{1,3}'''   CHex,       'CHARACTERhexConstant';
+'L?''([^\t\n'']|({bks}[^\t\n'']))+''' CChar,    'CHARACTERconstant';
+
+//
+// Comments and strings
+//
+'/\*'                       %ignore,    %push MLComment;
+'//'                        %ignore,    %push SLComment;
+'L?\"'                      StringSt,   'STRINGstart', %push StringLiteral;
+
+//
+// C/C++ operators
+//
+'{obr}'                     OBrack,     '[';
+'{cbr}'                     CBrack,     ']';
+'\('                        OParen,     '(';
+'\)'                        CParen,     ')';
+'{ocu}'                     OCurly,     '{';
+'{ccu}'                     CCurly,     '}';
+'\*'                        Star,       '*';
+','                         Comma,      ',';
+':'                         Colon,      ':';
+'='                         Assign,     '=';
+';'                         SemiColon,  ';';
+'\?'                        QMark,      '?';
+'\.\.\.'                    DotDotDot,  'ELLIPSIS';
+'\.'                        Dot,        '.';
+'&'                         And,        '&';
+'\+'                        Plus,       '+';
+'\-'                        Minus,      '-';
+'{not}'                     BitNot,     '~';
+'!'                         BoolNot,    '!';
+'/'                         Div,        '/';
+'%'                         Mod,        '%';
+'{or}'                      Or,         '|';
+// MA-X '/'                         Div,        '/';
+'<'                         LT,         '<';
+'>'                         GT,         '>';
+'<<'                        LS,         'LS';
+'>>'                        RS,         'RS';
+'<='                        LTE,        'LE';
+'>='                        GTE,        'GE';
+'=='                        EE,         'EQ';
+'!='                        NE,         'NE';
+'{hat}'                     Hat,        '^';
+'&&'                        LogicalAnd, 'ANDAND';
+'{or}{or}'                  LogicalOr,  'OROR';
+'\->'                       Arrow,      'ARROW';
+'\+\+'                      ICR,        'ICR';
+'\-\-'                      DCR,        'DECR';
+'\*='                       MULTassign, 'MULTassign';
+'/='                        DIVassign,  'DIVassign';
+'%='                        MODassign,  'MODassign';
+'\+='                       PLUSassign, 'PLUSassign';
+'\-='                       MINUSassign,'MINUSassign';
+'<<='                       LSassign,   'LSassign';
+'>>='                       RSassign,   'RSassign';
+'&='                        ANDassign,  'ANDassign';
+'{hat}='                    ERassign,   'ERassign';
+'{or}='                     ORassign,   'ORassign';
+
+//
+// C++ operators
+//
+'::'                        CLCL,       'CLCL';
+'\.\*'                      DOTstar,    'DOTstar';
+'\->\*'                     ARROWstar,  'ARROWstar';
+
+
+//
+// C/C++ keywords
+//
+'auto'                  Auto,       'AUTO';
+'break'                 Break,      'BREAK';
+'case'                  Case,       'CASE';
+'char'                  Char,       'CHAR';
+'const'                 Const,      'CONST';
+'continue'              Continue,   'CONTINUE';
+'default'               Default,    'DEFAULT';
+'do'                    Do,         'DO';
+'double'                Double,     'DOUBLE';
+'else'                  Else,       'ELSE';
+'enum'                  Enum,       'ENUM';
+'extern'                Extern,     'EXTERN';
+'float'                 Float,      'FLOAT';
+'for'                   For,        'FOR';
+'goto'                  Goto,       'GOTO';
+'if'                    If,         'IF';
+'int'                   Int,        'INT';
+'long'                  Long,       'LONG';
+'register'              Register,   'REGISTER';
+'return'                Return,     'RETURN';
+'short'                 Short,      'SHORT';
+'signed'                Signed,     'SIGNED';
+'sizeof'                Sizeof,     'SIZEOF';
+'static'                Static,     'STATIC';
+'struct'                Struct,     'STRUCT';
+'switch'                Switch,     'SWITCH';
+'typedef'               Typedef,    'TYPEDEF';
+'union'                 Union,      'UNION';
+'unsigned'              Unsigned,   'UNSIGNED';
+'void'                  Void,       'VOID';
+'volatile'              Volatile,   'VOLATILE';
+'while'                 While,      'WHILE';
+
+//
+// C++ keywords
+//
+'new'                       NEW,        'NEW';
+'delete'                    DELETE,     'DELETE';
+'this'                      THIS,       'THIS';
+'operator'                  OPERATOR,   'OPERATOR';
+'class'                     CLASS,      'CLASS';
+'public'                    PUBLIC,     'PUBLIC';
+'protected'                 PROTECTED,  'PROTECTED';
+'private'                   PRIVATE,    'PRIVATE';
+'virtual'                   VIRTUAL,    'VIRTUAL';
+'friend'                    FRIEND,     'FRIEND';
+'inline'                    INLINE,     'INLINE';
+'overload'                  OVERLOAD,   'OVERLOAD';
+
+//
+// Preprocessor tokens
+//
+'{bks}\n'               %ignore;
+'{pnd}[a-z_A-Z][a-z_A-Z0-9]*' StringRep,    '#parm';
+'{pnd}{pnd}'            PndPnd,     '##';
+'{pp}'                  Nil,        '#nil';
+'{pp}include'           Include,    '#include', %push Include;
+'{pp}define'            Define,     '#define', %push Define;
+'{pp}undef'             Undef,      '#undef';
+'{pp}if'                IfPre,      '#if';
+'{pp}ifdef'             IfDef,      '#ifdef';
+'{pp}ifndef'            IfNDef,     '#ifndef';
+'{pp}elif'              Elif,       '#elif';
+'{pp}else'              ElsePre,    '#else';
+'{pp}endif'             Endif,      '#endif';
+'{pp}line'              Line,       '#line', %push Line;
+'{pp}error'             Error,      '#error', %push Error;
+'{pp}pragma'            Pragma,     '#pragma', %push Pragma;
+'defined'               Defined,    'defined';
+
+//------------------------------------------------------------------------
+// Multiline comment
+//------------------------------------------------------------------------
+%expression MLComment
+'.'                         %ignore;
+'\n'                        %ignore;
+'\*/'                       %ignore,    %pop;
+
+//------------------------------------------------------------------------
+// Singleline comment
+//------------------------------------------------------------------------
+%expression SLComment
+'.'                         %ignore;
+'\n'                        Eol,        'eol', %pop;
+
+//------------------------------------------------------------------------
+// String literal
+//------------------------------------------------------------------------
+%expression StringLiteral
+'([^\n"]*({bks}\")?[^\n"]*)+'   String,     'STRINGliteral';
+'\"'                            StringEnd,  'STRINGend', %pop;
+
+//------------------------------------------------------------------------
+// Define Tokens
+//------------------------------------------------------------------------
+%expression Define
+'[\t ]+'                    %ignore;
+'[a-z_A-Z][a-z_A-Z0-9]*'    Id,     'IDENTIFIER',   %pop;
+'[a-z_A-Z][a-z_A-Z0-9]*\('  FuncId  'FUNCID',       %pop;
+
+//------------------------------------------------------------------------
+// Include Tokens
+//------------------------------------------------------------------------
+%expression Include
+'[\t ]+'                %ignore;
+'\"'                    BegQuote,   'begQuote', %goto FileName;
+'<'                     LT,         '<',        %goto FileName;
+
+//------------------------------------------------------------------------
+// Error
+//------------------------------------------------------------------------
+%expression Error
+'.+'                    Stuff,      'STUFF';
+'\n'                    Eol,        'eol', %pop;
+
+//------------------------------------------------------------------------
+// Pragma
+//------------------------------------------------------------------------
+%expression Pragma
+'.+'                    Stuff,  'STUFF';
+'\n'                    Eol,        'eol', %pop;
+
+//------------------------------------------------------------------------
+// Line Tokens
+//------------------------------------------------------------------------
+%expression Line
+'[\t ]+'                %ignore;
+'[0-9]+'                Dec,        'INTEGERconstant';
+'\"'                    BegQuote,   'begQuote', %goto FileName;
+
+//------------------------------------------------------------------------
+// Filename lexer
+//------------------------------------------------------------------------
+%expression FileName
+'>'                     GT,         '>', %pop;
+'\"'                    EndQuote,   'endQuote', %pop;
+'[^<>"]+'               FileName,   'fileName';
+
+//------------------------------------------------------------------------
+// Precedence Table
+//------------------------------------------------------------------------
+%prec
+1, '&', %left;
+1, '|', %left;
+1, '^', %left;
+2, '~', %right;
+1, '+', %left;
+1, '-', %left;
+2, '/', %left;
+2, '%', %left;
+2, '*', %left;
+3, 'LS', %left;
+3, 'RS', %left;
+4, '<', %left;
+4, '>', %left;
+4, 'LE', %left;
+4, 'GE', %left;
+4, 'EQ', %left;
+4, 'NE', %left;
+5, 'OROR', %left;
+6, 'ANDAND', %left;
+7, '!', %right;
+
+//------------------------------------------------------------------------
+// Grammar
+//------------------------------------------------------------------------
+%production lines
+
+LineList        lines       -> lines line;
+LineOne         lines       -> line;
+LineEmpty       line        -> 'eol';
+LinePreEol      line        -> linePre 'eol';
+LineTokenEol    line        -> tokenList 'eol';
+
+Define          linePre -> '#define'  'IDENTIFIER' tokenListOpt;
+DefineFunc      linePre -> '#define'  'FUNCID' idListOpt ')' tokenListOpt;
+Include         linePre -> '#include' '<' 'fileName' '>';
+IncludeQuote    linePre -> '#include' 'begQuote' 'fileName' 'endQuote';
+Undef           linePre -> '#undef' 'IDENTIFIER';
+Line            linePre -> '#line' 'INTEGERconstant' fileNameOpt;
+Error           linePre -> '#error' 'STUFF';
+Pragma          linePre -> '#pragma' 'STUFF';
+Empty           linePre -> '#nil';
+If              linePre -> '#if' expr;
+IfDef           linePre -> '#ifdef' 'IDENTIFIER';
+IfNDef          linePre -> '#ifndef' 'IDENTIFIER';
+Elif            linePre -> '#elif' expr;
+Else            linePre -> '#else';
+Endif           linePre -> '#endif';
+
+ExprBitNot      expr        -> '~' expr;
+ExprNot         expr        -> '!' expr;
+ExprPlus        expr        -> expr '+' expr;
+ExprMinus       expr        -> expr '-' expr;
+ExprMult        expr        -> expr '*' expr;
+ExprDiv         expr        -> expr '/' expr;
+ExprMod         expr        -> expr '%' expr;
+ExprLS          expr        -> expr 'LS' expr;
+ExprRS          expr        -> expr 'RS' expr;
+ExprBitAnd      expr        -> expr '&' expr;
+ExprBitOr       expr        -> expr '|' expr;
+ExprBitXor      expr        -> expr '^' expr;
+ExprEqual       expr        -> expr 'EQ' expr;
+ExprNotEqual    expr        -> expr 'NE' expr;
+ExprLT          expr        -> expr '<' expr;
+ExprGT          expr        -> expr '>' expr;
+ExprLE          expr        -> expr 'LE' expr;
+ExprGE          expr        -> expr 'GE' expr;
+ExprAndAnd      expr        -> expr 'ANDAND' expr;
+ExprOrOr        expr        -> expr 'OROR' expr;
+ExprDefined0    expr        -> 'defined' 'IDENTIFIER';
+ExprDefined1    expr        -> 'defined' '(' 'IDENTIFIER' ')';
+ExprParen       expr        -> '(' expr ')';
+ExprConstantId  expr        -> 'IDENTIFIER';
+ExprConstantOct expr        -> 'OCTALconstant';
+ExprConstantDec expr        -> 'INTEGERconstant';
+ExprConstantHex expr        -> 'HEXconstant';
+
+FileNameOptNull fileNameOpt -> ;
+FileNameOpt     fileNameOpt -> 'begQuote' 'fileName' 'endQuote';
+
+IdListOptNull   idListOpt   -> ;
+IdListOptOne    idListOpt   -> IDENTIFIER;
+IdListOpt       idListOpt   -> IDENTIFIER ',' idListOpt;
+
+TokenListOptNull    tokenListOpt -> ;
+TokenListOpt    tokenListOpt -> tokenList;
+TokenList       tokenList   -> tokenList token;
+Token           tokenList   -> token;
+
+Token00     token       -> 'IDENTIFIER';
+Token01     token       -> 'OCTALconstant';
+Token02     token       -> 'INTEGERconstant';
+Token03     token       -> 'HEXconstant';
+Token04     token       -> 'CHARACTERconstant';
+Token05     token       -> 'CHARACTERoctConstant';
+Token06     token       -> 'CHARACTERhexConstant';
+Token07     token       -> 'FLOATINGconstant0';
+Token08     token       -> 'FLOATINGconstant1';
+Token09     token       -> 'FLOATINGconstant2';
+Token10     token       -> 'STRINGstart';
+Token11     token       -> 'STRINGliteral';
+Token12     token       -> 'STRINGend';
+Token13     token       -> '[';
+Token14     token       -> ']';
+Token15     token       -> '(';
+Token16     token       -> ')';
+Token17     token       -> '{';
+Token18     token       -> '}';
+Token19     token       -> '*';
+Token20     token       -> ',';
+Token21     token       -> ':';
+Token22     token       -> '=';
+Token23     token       -> ';';
+Token24     token       -> '?';
+Token25     token       -> 'ELLIPSIS';
+Token26     token       -> '.';
+Token27     token       -> '&';
+Token28     token       -> '+';
+Token29     token       -> '-';
+Token30     token       -> '~';
+Token31     token       -> '!';
+Token33     token       -> '%';
+Token34     token       -> '|';
+Token35     token       -> '/';
+Token36     token       -> '<';
+Token37     token       -> '>';
+Token38     token       -> 'LS';
+Token39     token       -> 'RS';
+Token40     token       -> 'LE';
+Token41     token       -> 'GE';
+Token42     token       -> 'EQ';
+Token43     token       -> 'NE';
+Token44     token       -> '^';
+Token45     token       -> 'ANDAND';
+Token46     token       -> 'OROR';
+Token47     token       -> 'ARROW';
+Token48     token       -> 'ICR';
+Token49     token       -> 'DECR';
+Token50     token       -> 'MULTassign';
+Token51     token       -> 'DIVassign';
+Token52     token       -> 'MODassign';
+Token53     token       -> 'PLUSassign';
+Token54     token       -> 'MINUSassign';
+Token55     token       -> 'LSassign';
+Token56     token       -> 'RSassign';
+Token57     token       -> 'ANDassign';
+Token58     token       -> 'ERassign';
+Token59     token       -> 'ORassign';
+Token60     token       -> 'CLCL';
+Token61     token       -> 'DOTstar';
+Token62     token       -> 'ARROWstar';
+Token63     token       -> 'AUTO';
+Token64     token       -> 'BREAK';
+Token65     token       -> 'CASE';
+Token66     token       -> 'CHAR';
+Token67     token       -> 'CONST';
+Token68     token       -> 'CONTINUE';
+Token69     token       -> 'DEFAULT';
+Token70     token       -> 'DO';
+Token71     token       -> 'DOUBLE';
+Token72     token       -> 'ELSE';
+Token73     token       -> 'ENUM';
+Token74     token       -> 'EXTERN';
+Token75     token       -> 'FLOAT';
+Token76     token       -> 'FOR';
+Token77     token       -> 'GOTO';
+Token78     token       -> 'IF';
+Token79     token       -> 'INT';
+Token80     token       -> 'LONG';
+Token81     token       -> 'REGISTER';
+Token82     token       -> 'RETURN';
+Token83     token       -> 'SHORT';
+Token84     token       -> 'SIGNED';
+Token85     token       -> 'SIZEOF';
+Token86     token       -> 'STATIC';
+Token87     token       -> 'STRUCT';
+Token88     token       -> 'SWITCH';
+Token89     token       -> 'TYPEDEF';
+Token90     token       -> 'UNION';
+Token91     token       -> 'UNSIGNED';
+Token92     token       -> 'VOID';
+Token93     token       -> 'VOLATILE';
+Token94     token       -> 'WHILE';
+Token95     token       -> 'NEW';
+Token96     token       -> 'DELETE';
+Token97     token       -> 'THIS';
+Token98     token       -> 'OPERATOR';
+Token99     token       -> 'CLASS';
+Token100    token       -> 'PUBLIC';
+Token101    token       -> 'PROTECTED';
+Token102    token       -> 'PRIVATE';
+Token103    token       -> 'VIRTUAL';
+Token104    token       -> 'FRIEND';
+Token105    token       -> 'INLINE';
+Token106    token       -> 'OVERLOAD';
+Token107    token       -> 'defined';
+Token108    token       -> '#parm';
+Token109    token       -> '##';
+

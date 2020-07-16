@@ -1,0 +1,5 @@
+tests/*                  linguist-vendored
+samples/calc/generated/* linguist-vendored
+*.sln                    linguist-vendored
+*.vcxproj                linguist-vendored
+*.vcxproj.filters        linguist-vendored

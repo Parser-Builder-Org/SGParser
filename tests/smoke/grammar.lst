@@ -1,0 +1,8 @@
+# Filename:  grammar.lst
+# Content:   Grammar list for smoke tests runner
+# Provided AS IS under MIT License; see LICENSE file in root folder.
+
+Calc.gr
+CmdLineParser.gr
+# CPre.ycc
+# XCPre.gr

@@ -1,0 +1,265 @@
+
+Item 0 - 0x00
+Source state(s): Accept
+ID:0    [Accept0]  -> * unit 
+ID:1    unit       -> * unit clause 
+ID:2    unit       -> * clause 
+ID:3    clause     -> * expression 
+ID:4    clause     -> * assignment 
+ID:5    clause     -> * 'eol' 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+ID:15   assignment -> * 'identifier' ':=' expression 
+ID:16   assignment -> * 'identifier' ':=' assignment 
+
+Item 1 - 0x01
+Source state(s): 0, 1, 2, 9, 13, 14, 15, 16, 17, 18
+ID:9    expression -> '(' * expression ')' 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 2 - 0x02
+Source state(s): 0, 1, 2, 9, 13, 14, 15, 16, 17, 18
+ID:8    expression -> '-' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 3 - 0x03
+Source state(s): 0, 9
+ID:4    clause     -> assignment *                    LA: 'EOF number - ( identifier eol'
+
+Item 4 - 0x04
+Source state(s): 0
+ID:2    unit       -> clause *                        LA: 'EOF number - ( identifier eol'
+
+Item 5 - 0x05
+Source state(s): 0, 9
+ID:5    clause     -> 'eol' *                         LA: 'EOF number - ( identifier eol'
+
+Item 6 - 0x06
+Source state(s): 0, 9
+ID:3    clause     -> expression *                    LA: 'EOF number - ( identifier eol'
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 7 - 0x07
+Source state(s): 0, 9, 18
+ID:7    expression -> 'identifier' *                  LA: 'EOF number + - * / ^ ( identifier eol'
+ID:15   assignment -> 'identifier' * ':=' expression 
+ID:16   assignment -> 'identifier' * ':=' assignment 
+
+Item 8 - 0x08
+Source state(s): 0, 1, 2, 9, 13, 14, 15, 16, 17, 18
+ID:6    expression -> 'number' *                      LA: 'EOF number + - * / ^ ( ) identifier eol'
+
+Item 9 - 0x09
+Source state(s): 0
+ID:0    [Accept0]  -> unit *                          LA: 'EOF'
+ID:1    unit       -> unit * clause 
+ID:3    clause     -> * expression 
+ID:4    clause     -> * assignment 
+ID:5    clause     -> * 'eol' 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+ID:15   assignment -> * 'identifier' ':=' expression 
+ID:16   assignment -> * 'identifier' ':=' assignment 
+
+Item 10 - 0x0A
+Source state(s): 1
+ID:9    expression -> '(' expression * ')' 
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 11 - 0x0B
+Source state(s): 1, 2, 13, 14, 15, 16, 17
+ID:7    expression -> 'identifier' *                  LA: 'EOF number + - * / ^ ( ) identifier eol'
+
+Item 12 - 0x0C
+Source state(s): 2
+ID:8    expression -> '-' expression *                LA: 'EOF number + - * / ^ ( ) identifier eol'
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 13 - 0x0D
+Source state(s): 6, 10, 12, 21, 22, 23, 24, 25, 27
+ID:12   expression -> expression '*' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 14 - 0x0E
+Source state(s): 6, 10, 12, 21, 22, 23, 24, 25, 27
+ID:10   expression -> expression '+' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 15 - 0x0F
+Source state(s): 6, 10, 12, 21, 22, 23, 24, 25, 27
+ID:11   expression -> expression '-' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 16 - 0x10
+Source state(s): 6, 10, 12, 21, 22, 23, 24, 25, 27
+ID:13   expression -> expression '/' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 17 - 0x11
+Source state(s): 6, 10, 12, 21, 22, 23, 24, 25, 27
+ID:14   expression -> expression '^' * expression 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+
+Item 18 - 0x12
+Source state(s): 7
+ID:15   assignment -> 'identifier' ':=' * expression 
+ID:16   assignment -> 'identifier' ':=' * assignment 
+ID:6    expression -> * 'number' 
+ID:7    expression -> * 'identifier' 
+ID:8    expression -> * '-' expression 
+ID:9    expression -> * '(' expression ')' 
+ID:10   expression -> * expression '+' expression 
+ID:11   expression -> * expression '-' expression 
+ID:12   expression -> * expression '*' expression 
+ID:13   expression -> * expression '/' expression 
+ID:14   expression -> * expression '^' expression 
+ID:15   assignment -> * 'identifier' ':=' expression 
+ID:16   assignment -> * 'identifier' ':=' assignment 
+
+Item 19 - 0x13
+Source state(s): 9
+ID:1    unit       -> unit clause *                   LA: 'EOF number - ( identifier eol'
+
+Item 20 - 0x14
+Source state(s): 10
+ID:9    expression -> '(' expression ')' *            LA: 'EOF number + - * / ^ ( ) identifier eol'
+
+Item 21 - 0x15
+Source state(s): 13
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:12   expression -> expression '*' expression *     LA: 'EOF number + - * / ^ ( ) identifier eol'
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 22 - 0x16
+Source state(s): 14
+ID:10   expression -> expression * '+' expression 
+ID:10   expression -> expression '+' expression *     LA: 'EOF number + - * / ^ ( ) identifier eol'
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 23 - 0x17
+Source state(s): 15
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:11   expression -> expression '-' expression *     LA: 'EOF number + - * / ^ ( ) identifier eol'
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+
+Item 24 - 0x18
+Source state(s): 16
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:13   expression -> expression '/' expression *     LA: 'EOF number + - * / ^ ( ) identifier eol'
+ID:14   expression -> expression * '^' expression 
+
+Item 25 - 0x19
+Source state(s): 17
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+ID:14   expression -> expression '^' expression *     LA: 'EOF number + - * / ^ ( ) identifier eol'
+
+Item 26 - 0x1A
+Source state(s): 18
+ID:16   assignment -> 'identifier' ':=' assignment *  LA: 'EOF number - ( identifier eol'
+
+Item 27 - 0x1B
+Source state(s): 18
+ID:10   expression -> expression * '+' expression 
+ID:11   expression -> expression * '-' expression 
+ID:12   expression -> expression * '*' expression 
+ID:13   expression -> expression * '/' expression 
+ID:14   expression -> expression * '^' expression 
+ID:15   assignment -> 'identifier' ':=' expression *  LA: 'EOF number - ( identifier eol'

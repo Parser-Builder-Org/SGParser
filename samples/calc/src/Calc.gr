@@ -1,0 +1,52 @@
+// Filename:  Calc.gr
+// Content:   Grammar for simple calculator sample
+// Provided AS IS under MIT License; see LICENSE file in root folder.
+
+%expression calc
+
+'[0-9]*\.?[0-9]+'   Number, 'number';
+
+'\+'    Plus,       '+';
+'\-'    Minus,      '-';
+'\*'    Multiply,   '*';
+'\/'    Divide,     '/';
+'\^'    Power,      '^';
+'\:='   Assign,     ':=';
+
+'\('    OpeningParenthesis, '(';
+'\)'    ClosingParenthesis, ')';
+
+'[a-zA-Z_]+[a-zA-Z0-9_]*'   Identifier, 'identifier';
+
+'[ \t]' %ignore;
+
+'\n'    EndOfLine,  'eol';
+
+%prec // from lowest to highest
+
+%right  ':=' ;
+%left   '+', '-' ;
+%left   '*', '/' ;
+%right  '^' ;
+
+%production unit
+
+Unit        unit -> unit clause ;
+Oneliner    unit -> clause ;
+
+ExpressionClause    clause -> expression ;
+AssignmentClause    clause -> assignment ;
+EmptyClause         clause -> 'eol' ;
+
+Number          expression -> 'number' ;
+Identifier      expression -> 'identifier' ;
+Negation        expression -> '-' expression ;
+Expression      expression -> '(' expression ')' ;
+Addition        expression -> expression '+' expression ;
+Substruction    expression -> expression '-' expression ;
+Multiplication  expression -> expression '*' expression ;
+Division        expression -> expression '/' expression ;
+Exponentiation  expression -> expression '^' expression ;
+
+Assignment  assignment -> 'identifier' ':=' expression ;
+Replication assignment -> 'identifier' ':=' assignment ;
