@@ -76,8 +76,8 @@ Some reasons you might want to use SGParser instead of 'yacc' include:
         │       └── ...                       # Pre-generated etalon files for CmdLineParser.gr grammar
         ├── grammar.lst                       # Grammar list for smoke test runner
         ├── README.md                         # Smoke tests documentation
-        ├── smoke.bat                         # Smoke test runner for 32/64-bit SGYacc builds on Windows (wrapper for PowerShell script)
-        ├── smoke.ps1                         # Smoke test runner for 32/64-bit SGYacc builds on Windows (PowerShell script)
+        ├── smoke.bat                         # Smoke test runner for 32/64-bit SGYacc on Windows (wrapper for PowerShell script)
+        ├── smoke.ps1                         # Smoke test runner for 32/64-bit SGYacc on Windows (PowerShell script)
         └── smoke.sh                          # Smoke test runner for 64-bit SGYacc on Linux, macOS or WSL (Bash script)
 ```
 
