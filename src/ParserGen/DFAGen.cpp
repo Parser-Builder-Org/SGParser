@@ -8,8 +8,10 @@
 #include "DFAGen.h"
 #include "Tokenizer.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser 
+{
+namespace Generator
+{
 
 // ***** Deterministic Finite Automaton Generator
 
@@ -358,7 +360,7 @@ size_t DFAGen::Compress([[maybe_unused]] unsigned tableType, unsigned compressTy
 
 
 // Create a static DFA structure
-bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
+bool DFAGen::CreateStaticDFA(String& str, const String& name, const String& namespaceName) const {
     // The DFA must be valid
     if (!IsValid())
         return false;
@@ -370,20 +372,29 @@ bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
     const auto lexemeCount     = LexemeInfos.size();
     const auto expressionCount = ExpressionStartStates.size();
 
+    String dest;
+
+    // *** Add the includes
+
+    dest += "#include \"ParseTableType.h\"\n\n#include <cstdint>\n\n";
+
+    // *** Add namespace declaration if needed
+
+    if (!namespaceName.empty())
+        dest += "namespace " + namespaceName + "\n{\n\n";
+
     // *** Add the Transition static data
 
-    auto dest = StringWithFormat("static uint16_t %s_TransitionTable[%zu][%zu] =\n{",
-                                 name.data(), tableHeight, tableWidth);
+    dest += StringWithFormat("static uint16_t %s_TransitionTable[%zu][%zu] =\n{",
+                             name.data(), tableHeight, tableWidth);
 
     // Go through all the transitions and add them
     auto sepV = "\n";
     for (const auto& row: TransitionTable) {
-        dest += sepV;
-        dest += "    {";
+        dest += sepV + String{"    {"};
         auto sepH = "";
         for (const unsigned state: row) {
-            dest += sepH;
-            dest += StringWithFormat("0x%04X", state);
+            dest += sepH + StringWithFormat("0x%04X", state);
             sepH = ", ";
         }
         dest += "}";
@@ -410,14 +421,13 @@ bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
 
     // *** Add the Lexeme Info static data
 
-    dest += StringWithFormat("static LexemeInfo %s_LexemeInfos[%zu] =\n{",
+    dest += StringWithFormat("static SGParser::LexemeInfo %s_LexemeInfos[%zu] =\n{",
                              name.data(), lexemeCount);
 
     // Go through all the accept states and add them
     sep = "";
-    for (const auto [tokenCode, action]: LexemeInfos) {
-        dest += sep;
-        dest += StringWithFormat("\n    {%u, LexemeInfo::", tokenCode);
+    for (const auto& [tokenCode, action]: LexemeInfos) {
+        dest += sep + StringWithFormat("\n    {%u, SGParser::LexemeInfo::", tokenCode);
 
         switch (action & LexemeInfo::ActionMask) {
             case LexemeInfo::ActionNone: dest += "ActionNone";  break;
@@ -444,8 +454,7 @@ bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
     // Go through all the accept states and add them
     sep = "";
     for (const unsigned state: ExpressionStartStates) {
-        dest += sep;
-        dest += StringWithFormat("%u", state);
+        dest += sep + StringWithFormat("%u", state);
         sep = ", ";
     }
     dest += "\n};\n\n";
@@ -460,29 +469,30 @@ bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
     std::map<size_t, decltype(CharTable)::value_type> sortedCharTable{CharTable.begin(),
                                                                       CharTable.end()};
     sep = "";
-    for (const auto [pos, value]: sortedCharTable) {
-        dest += sep;
-        dest += StringWithFormat("    {%zu, %u}", pos, value);
+    for (const auto& [pos, value]: sortedCharTable) {
+        dest += sep + StringWithFormat("    {%zu, %u}", pos, value);
         sep = ",\n";
     }
     dest += "\n};\n\n";
 
     // *** Add the StaticDFA structure
 
-    dest += StringWithFormat("static StaticDFA %s =\n"
+    dest += StringWithFormat("static SGParser::StaticDFA %s =\n"
                 "{\n"
-                "    %zu, %zu,\n"
+                "    %zuu,\n"
+                "    %zuu,\n"
                 "    %s_TransitionTable[0u],\n"
                 "    %s_AcceptStates,\n"
-                "    %zu,\n"
+                "    %zuu,\n"
                 "    %s_CharTable[0u],\n"
-                "    %zu,\n"
+                "    %zuu,\n"
                 "    %s_LexemeInfos,\n"
-                "    %zu,\n"
+                "    %zuu,\n"
                 "    %s_ExpressionStartStates\n"
-                "};",
+                "};\n",
                 name.data(),
-                tableWidth, tableHeight,
+                tableWidth,
+                tableHeight,
                 name.data(),
                 name.data(),
                 CharTable.size(),
@@ -492,6 +502,10 @@ bool DFAGen::CreateStaticDFA(String& str, const String& name) const {
                 expressionCount,
                 name.data()
     );
+
+    // Close namespace declaration of needed
+    if (!namespaceName.empty())
+        dest += "\n} // namespace " + namespaceName + "\n";
 
     str.swap(dest);
 
@@ -534,3 +548,6 @@ void DFAGen::EpsilonClosure(std::vector<NFANode*>& setOfStates) {
             }
     }
 }
+
+} // namespace Generator
+} // namespace SGParser

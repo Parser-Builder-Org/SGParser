@@ -39,8 +39,10 @@
       for creating corresponding DFA table).
 **/
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Lex class
 

@@ -25,9 +25,6 @@
     <ClInclude Include="..\..\..\src\SGYacc\CmdLineProdEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\SGYacc\FileStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\SGYacc\CmdLineGrammar.h">
       <Filter>Header Files</Filter>
     </ClInclude>

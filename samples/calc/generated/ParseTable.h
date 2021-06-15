@@ -1,3 +1,13 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
+#include "ParseTableType.h"
+
+#include <cstdint>
+
+namespace Calc
+{
+
 static uint16_t CalcParseTable_ActionTable[28][13] =
 {
     {0x0000, 0x0000, 0x8008, 0x0000, 0x8002, 0x0000, 0x0000, 0x0000, 0x0000, 0x8001, 0x0000, 0x8007, 0x8005},
@@ -86,23 +96,25 @@ static uint8_t CalcParseTable_StateInfos[28][2] =
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
 };
 
-static StaticParseTable CalcParseTable =
+static SGParser::StaticParseTable CalcParseTable =
 {
-    ParseTable::TableType::LALR,
-    28,
-    13,
+    SGParser::ParseTableType::LALR,
+    28u,
+    13u,
     CalcParseTable_ActionTable[0u],
-    28,
-    4,
+    28u,
+    4u,
     CalcParseTable_GotoTable[0u],
-    17,
+    17u,
     CalcParseTable_ReduceProduction[0u],
-    4,
+    4u,
     CalcParseTable_Nonterminals,
-    13,
+    13u,
     CalcParseTable_Terminals,
-    28,
+    28u,
     CalcParseTable_StateInfos[0u],
-    0,
+    0u,
     nullptr
 };
+
+} // namespace Calc

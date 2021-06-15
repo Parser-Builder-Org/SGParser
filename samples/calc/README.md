@@ -153,11 +153,11 @@ All these files get stored in a folder named *generated*. After generating the t
 
 If you change the grammar you have to re-generate the files after you made the changes.
 It can be done by simply running the `generate` script from `samples/calc` directory.
-By default it uses `x64 debug` version of the `sgyacc` executable.
+By default it uses `x86 debug` version of the `sgyacc` executable.
 You can specify different architecture for the generate script.
 ```
 generate --arch x64
-generate --arch win32
+generate --arch x86
 ```
 It's also possible to choose configuration.
 ```
@@ -167,11 +167,11 @@ generate --config release
 
 If you change the grammar you have to re-generate the files after you made the changes.
 It can be done by simply running the `generate` script from `samples/calc` directory.
-By default it uses `x64 debug` version of the `sgyacc` executable.
+By default it uses `x86 debug` version of the `sgyacc` executable.
 You can specify different architecture for the generate script.
 ```
 generate --arch x64
-generate --arch win32
+generate --arch x86
 ```
 It's also possible to choose configuration.
 ```

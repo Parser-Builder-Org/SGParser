@@ -7,8 +7,10 @@
 
 #include "ParseTable.h"
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** ParseTable class
 
@@ -23,16 +25,18 @@ public:
     ParseTableGen() = default;
 
     // Make parse table out of grammar
-    explicit ParseTableGen(class Grammar& grammar, TableType tableType = TableType::CLR) {
+    explicit ParseTableGen(class Grammar& grammar, 
+                           ParseTableType tableType = ParseTableType::CLR) {
         // Create a new parse table
         Create(grammar, tableType);
     }
 
     // Initialize the ParseTable out of grammar
-    bool     Create(Generator::Grammar& grammar, TableType tableType = TableType::CLR);
+    bool     Create(Generator::Grammar& grammar, ParseTableType tableType = ParseTableType::CLR);
 
     // Create a static parse table structure
-    bool     CreateStaticParseTable(String& str, const String& name) const;
+    bool     CreateStaticParseTable(String& str, const String& name,
+                                    const String& namespaceName = String{}) const;
 
 private:
     friend class Grammar;

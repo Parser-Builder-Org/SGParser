@@ -1,4 +1,10 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
 //////////////////////////// NonTermEnum ////////////////////////////
+
+namespace XC
+{
 
 enum class NonTermEnum
 {
@@ -15,3 +21,5 @@ constexpr char const* const StringifyEnumNonTermEnum[] =
     /*2*/ "expression",
     /*3*/ "assignment"
 };
+
+} // namespace XC

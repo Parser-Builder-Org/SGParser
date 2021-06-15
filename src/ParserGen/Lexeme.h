@@ -8,7 +8,8 @@
 #include "SGString.h"
 #include "LexemeInfo.h"
 
-namespace SGParser {
+namespace SGParser
+{
 
 // *** Lexeme structure
 

@@ -5,9 +5,8 @@
 #ifndef INC_SGPARSER_LEXEMEINFO_H
 #define INC_SGPARSER_LEXEMEINFO_H
 
-#include <cstdint>
-
-namespace SGParser {
+namespace SGParser
+{
 
 // *** LexemeInfo structure
 
@@ -18,12 +17,12 @@ struct LexemeInfo final
     // Action
     enum ActionValue : unsigned 
     {
-        ActionNone      = 0x0000'0000,
-        ActionGoto      = 0x1000'0000,
-        ActionPush      = 0x2000'0000,
-        ActionPop       = 0x3000'0000,
-        ActionMask      = 0xF000'0000,
-        ActionValueMask = 0x0FFF'FFFF
+        ActionNone      = 0x0000'0000u,
+        ActionGoto      = 0x1000'0000u,
+        ActionPush      = 0x2000'0000u,
+        ActionPop       = 0x3000'0000u,
+        ActionMask      = 0xF000'0000u,
+        ActionValueMask = 0x0FFF'FFFFu
     };
 
     // Token code, 0 for ignore

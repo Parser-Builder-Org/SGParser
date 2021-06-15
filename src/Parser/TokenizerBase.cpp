@@ -4,7 +4,8 @@
 
 #include "TokenizerBase.h"
 
-using namespace SGParser;
+namespace SGParser
+{
 
 // ***** Tokenizer buffer implementation
 
@@ -146,3 +147,5 @@ void TokenizerBase::AdjustHead() noexcept {
             delete std::exchange(pHeadBuffer, pHeadBuffer->pNext);
     }
 }
+
+} // namespace SGParser

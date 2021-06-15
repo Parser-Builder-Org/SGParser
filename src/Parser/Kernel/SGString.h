@@ -9,11 +9,12 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cinttypes>
 #include <string>
-#include <charconv>
 #include <type_traits>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** String type definition
 
@@ -27,7 +28,7 @@ using String = std::basic_string<CharT>;
 // Format string and string-typed arguments can be only
 // a null-terminated strings of single-byte character types (UTF-8 encoded)
 template <typename CompatibleChar>
-String StringWithVAFormat(const CompatibleChar* format, va_list argList) {
+inline String StringWithVAFormat(const CompatibleChar* format, va_list argList) {
     static_assert(std::is_integral_v<CompatibleChar> && sizeof(CompatibleChar) == 1u,
                   "String supports only single-byte character types, e.g. char or char8_t");
 
@@ -65,7 +66,7 @@ String StringWithVAFormat(const CompatibleChar* format, va_list argList) {
 // Format string and string-typed arguments can be only
 // a null-terminated strings of single-byte character types (UTF-8 encoded)
 template <typename CompatibleChar>
-String StringWithFormat(const CompatibleChar* format...) {
+inline String StringWithFormat(const CompatibleChar* format...) {
     static_assert(std::is_integral_v<CompatibleChar> && sizeof(CompatibleChar) == 1u,
                   "String supports only single-byte character types, e.g. char or char8_t");
 
@@ -81,34 +82,23 @@ String StringWithFormat(const CompatibleChar* format...) {
 // Non-throwing conversion from arithmetic type
 // Returns an empty string in case of conversion error
 template<typename Number>
-String StringFromNumber(Number value) noexcept {
+inline String StringFromNumber(Number value) noexcept {
     static_assert(std::is_arithmetic_v<Number>, "Arithmetic type is required");
-
-    // Should be enough for representation of any arithmetic type
-    static constexpr size_t strSize = 24u;
-    char str[strSize];
-
-    if (const auto [ptr, ec] = std::to_chars(str, str + strSize, value); ec == std::errc{})
-        return String{reinterpret_cast<const CharT*>(str), reinterpret_cast<const CharT*>(ptr)};
-    SG_ASSERT(false);
-    return String{};
+    return std::to_string(value);
 }
 
 
 // Non-throwing conversion to arithmetic type
 // Returns a default-constructed Number value in case of conversion error
 template <typename Number>
-Number StringToNumber(const String& str) noexcept {
+inline Number StringToNumber(const String& str) noexcept {
     static_assert(std::is_arithmetic_v<Number>, "Arithmetic type is required");
-
-    Number result;
-    const auto from = reinterpret_cast<const char*>(str.data());
-    const auto to   = reinterpret_cast<const char*>(str.data() + str.size());
-
-    if (const auto [_, ec] = std::from_chars(from, to, result); ec == std::errc{})
-        return result;
-    SG_ASSERT(false);
-    return Number{};
+    if constexpr (std::is_floating_point_v<Number>)
+        return static_cast<Number>(std::strtold(str.data(), nullptr));
+    else if constexpr (std::is_signed_v<Number>)
+        return static_cast<Number>(std::strtoimax(str.data(), nullptr, 10));
+    else
+        return static_cast<Number>(std::strtoumax(str.data(), nullptr, 10));
 }
 
 } // namespace SGParser

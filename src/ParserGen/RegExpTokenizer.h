@@ -7,8 +7,10 @@
 
 #include "Tokenizer.h"
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // *** Simple Regular Expression Tokenizer
 

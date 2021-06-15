@@ -12,8 +12,10 @@
 #include "Tokenizer.h"
 #include "Parser.h"
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Parse Data
 
@@ -36,10 +38,10 @@ public:
     // *** Using grammar
 
     // Create the DFA from lexemes
-    virtual bool MakeDFA(DFAGen& dfa)                                                        = 0;
+    virtual bool MakeDFA(DFAGen& dfa)                                                         = 0;
     // Create the parse table
     virtual bool MakeParseTable(ParseTableGen& parseTable,
-                                ParseTable::TableType tableType = ParseTable::TableType::CLR) = 0;
+                                ParseTableType tableType = ParseTableType::CLR)               = 0;
 };
 
 
@@ -68,7 +70,7 @@ public:
     bool MakeDFA(DFAGen& dfa) override;
     // Create the parse table
     bool MakeParseTable(ParseTableGen& parseTable,
-                        ParseTable::TableType tableType = ParseTable::TableType::CLR) override;
+                        ParseTableType tableType = ParseTableType::CLR) override;
 
     // *** Variable Access
 

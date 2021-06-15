@@ -13,7 +13,8 @@
 #include <type_traits>
 #include <algorithm>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Parse Stack Element
 
@@ -27,7 +28,7 @@ struct ParseStackElement
 {
     // Type of token, for parser to refer to
     using TokenType = Token;
-    
+
     // Parser State
     unsigned State          = ParseTable::InvalidState;
     // Starting Terminal marker (index) for this state, if not InvalidIndex
@@ -59,7 +60,7 @@ protected:
 
 
 // Generic parse stack entry
-struct ParseStackGenericElement final : public ParseStackElement<GenericToken> 
+struct ParseStackGenericElement final : public ParseStackElement<GenericToken>
 {
     // User-defined data
     String Str;
@@ -84,7 +85,7 @@ struct ParseStackGenericElement final : public ParseStackElement<GenericToken>
 template <class> class Parse;
 
 template <class StackElement>
-class ParseHandler 
+class ParseHandler
 {
 public:
     virtual ~ParseHandler() = default;
@@ -185,7 +186,7 @@ public:
     // One greater than max allowed index in (*this)[n]
     // Result varies during parsing (since StackPosition varies).
     IndexType GetMaxAllowedIndex() const noexcept {
-        return IndexType(StackSize - StackPosition); 
+        return IndexType(StackSize - StackPosition);
     }
 
     // On reduce, this can be used to access production directly
@@ -202,6 +203,10 @@ public:
         SG_ASSERT(index < GetMaxAllowedIndex());
         return pStack[StackPosition + index];
     }
+
+    // One greater than max allowed index in (*this)[n]
+    // Result varies during parsing (since StackPosition varies)
+    size_t size() const noexcept { return StackSize - StackPosition; }
 
     // *** Debugging functions
 
@@ -253,8 +258,8 @@ private:
     TokenType     Token;
     // Left value, for reduce
     unsigned      ReduceLeft     = 0u;
-    // Valid token set, used in error recovery
-    size_t*       pValidTokenSet = nullptr;
+    // Set of stack positions for valid tokens, used in error recovery
+    size_t*       pValidTokenStackPositions  = nullptr;
     // Error Marker
     size_t        ErrorMarker    = InvalidIndex;
     // Last error state, for debug reporting
@@ -285,7 +290,7 @@ bool Parse<StackElement>::Create(const ParseTable* ptable, size_t stackSize) {
 
     // From this point we can (safely) initialize the actual data
 
-    delete[] std::exchange(pValidTokenSet, nullptr);
+    delete[] std::exchange(pValidTokenStackPositions, nullptr);
 
     pParseTable = ptable;
     pTokenizer  = nullptr;
@@ -320,11 +325,8 @@ void Parse<StackElement>::Destroy() {
     // Delete the parse stack
     CleanupParseStack();
 
-    delete[] pStack;
-    pStack = nullptr;
-
-    delete[] pValidTokenSet;
-    pValidTokenSet = nullptr;
+    delete[] std::exchange(pStack, nullptr);
+    delete[] std::exchange(pValidTokenStackPositions, nullptr);
 
     TopState = InvalidState;
 }
@@ -379,7 +381,7 @@ void Parse<StackElement>::ResetParse() {
         else
             pStack[0u].TerminalMarker = InvalidIndex;
 
-        delete[] std::exchange(pValidTokenSet, newValidTokenSet);
+        delete[] std::exchange(pValidTokenStackPositions, newValidTokenSet);
     }
     // Otherwise, set them to empty
     else {
@@ -504,7 +506,22 @@ bool Parse<StackElement>::DoParse(ParseHandler<StackElement>& parseHandler) {
             // Get next state (consult goto)
             TopState      = pParseTable->GetLeftReduceState(pStack[StackPosition - 1u].State,
                                                             rprod.Left);
-            SG_ASSERT(TopState != InvalidState);
+            if (TopState == InvalidState) {
+                // Cleanup the stack, including [StackPosition].
+                for (size_t i = size_t(rprod.Length + 1u); i > 0u; --i)
+                    pStack[StackPosition + i - 1u].Cleanup();
+                // Revert to previous stack position.
+                SG_ASSERT(StackPosition > 0u);
+                --StackPosition;
+                // Set Token.Code to '%error', which will allow try_next_action to process
+                // appropriately, with either shift or reduce.
+                Token.Code     = TokenCode::TokenError;
+                // Backtrack by one token so that the first valid token can be re-consumed
+                // properly following an error.
+                PrevTokenIndex = Stream.GetTokenIndex();
+                Stream.SeekBack(1u);
+                goto try_next_action;
+            }
             NextTokenFlag = false;
             ReduceLeft    = rprod.Left;
 
@@ -553,38 +570,61 @@ bool Parse<StackElement>::DoParse(ParseHandler<StackElement>& parseHandler) {
         }
 
         // Calculate valid token set
-        bool       errorProdFound = false;
-        const auto maxToken       = pParseTable->GetTerminalCount();
-        std::fill(pValidTokenSet, pValidTokenSet + maxToken, InvalidIndex);
+        bool       errorProdFound    = false;
+        bool       nextActionValid   = false;
+        size_t     nextStackPosition = 0u;
+        const auto maxToken          = pParseTable->GetTerminalCount();
+        std::fill(pValidTokenStackPositions, pValidTokenStackPositions + maxToken, InvalidIndex);
 
         // Search stack until a state with action on 'error' is found
         for (size_t i = 0u; i <= StackPosition; ++i) {
             const auto sp = StackPosition - i;
             actionEntry   = pParseTable->GetAction(pStack[sp].State, errorCode);
             if (actionEntry & (ParseTable::ShiftMask | ParseTable::ReduceMask)) {
-                // If the action is reduce, we have to try reducing until we 
+                // If the action is reduce, we have to try reducing until we
                 // finally shift the error token
                 // Once we shift, we can look for the next valid token
-                auto pos       = sp;
-                auto actionVal = actionEntry & ParseTable::ExtractMask;
+                auto pos            = sp;
+                auto actionVal      = actionEntry & ParseTable::ExtractMask;
+                bool needNextAction = true;
 
                 while (actionEntry & ParseTable::ReduceMask) {
-                    pos -= pParseTable->GetReduceActionPopSize(actionVal) - 1u;
-                    const auto state = pParseTable->GetReduceState(pStack[pos - 1u].State, 
-                                                                   actionVal);
-                    actionEntry      = pParseTable->GetAction(state, errorCode);
-                    actionVal        = actionEntry & ParseTable::ExtractMask;
+                    // Check special case (Accept)
+                    const auto length = pParseTable->GetReduceActionPopSize(actionVal);
+                    if (length == 0u) {
+                        needNextAction = false;
+                        break;
+                    }
+                    pos -= length - 1u;
+                    SG_ASSERT(pos > 0u && pos <= StackSize);
+                    // Check special case (reduce state for action is invalid)
+                    const auto state = pParseTable->GetReduceState(pStack[pos - 1u].State, actionVal);
+                    if (state == InvalidState) {
+                        needNextAction = false;
+                        break;
+                    }
+                    actionEntry = pParseTable->GetAction(state, errorCode);
+                    actionVal   = actionEntry & ParseTable::ExtractMask;
                 }
 
                 // We should be shifting next, so actionVal is a state that'll be
                 // on stack once we shift error
                 errorProdFound = true;
 
+                if (needNextAction) {
+                    const auto nextActionAfterError = pParseTable->GetAction(actionVal, Token.Code);
+                    if ((nextActionAfterError & (ParseTable::ShiftMask | ParseTable::ReduceMask)) != 0) {
+                        nextActionValid   = true;
+                        nextStackPosition = sp;
+                        break;
+                    }
+                }
+
                 // Go through all symbols, and collect allowed tokens
                 for (unsigned j = 0u; j < unsigned(maxToken); ++j)
-                    if (pValidTokenSet[j] == InvalidIndex)
+                    if (pValidTokenStackPositions[j] == InvalidIndex)
                         if (pParseTable->GetAction(actionVal, j) & ParseTable::ActionMask)
-                            pValidTokenSet[j] = sp;
+                            pValidTokenStackPositions[j]  = sp;
             }
         }
 
@@ -594,29 +634,67 @@ bool Parse<StackElement>::DoParse(ParseHandler<StackElement>& parseHandler) {
             goto step_error;
         }
 
-        // If found, try to recover
-        // Skip all 'unacceptable' tokens
-        while (pValidTokenSet[Token.Code] == InvalidIndex) {
-            if (Token.Code == TokenCode::TokenError || Token.Code == TokenCode::TokenEOF)
-                goto step_error; // Failed to recover
-            GetNextToken(Token);
+        if (nextActionValid) {
+            // If there are reductions we can do on 'error' lookahead, do them first
+            if ((pParseTable->GetAction(pStack[StackPosition].State, errorCode) &
+                 ParseTable::ReduceMask) == 0u) {
+                // Flush the remainder of stack symbols (this will also set StackPosition=sp)
+                CleanupParseStack(nextStackPosition);
+            }
+        } else {
+            // If an error production was found up the stack, we try to recover. This involves:
+            //  1. Skipping all tokens, potentially including the last token that triggered the error,
+            //     until a valid token is found.
+            //       - No tokens may be skipped at all if the offending token is actually valid directly
+            //         after an error. If you wrote "(5 + )" instead of "(5 + 5)" your original error
+            //         token may be ')' but it doesn't actually need to be skipped.
+            //         In this case, pValidTokenStackPositions[Token.Code] is valid up the stack, so no skipping
+            //         takes place.
+            //  2. Rolling back the stack, which includes StackPosition to a state that accepts
+            //     an error followed by our next token. This is done by
+            //         CleanupParseStack(pValidTokenStackPositions[Token.Code])
+            //  3. Backtracking by one token and setting Token.Code to 'errorCode' to continue parsing.
+            //         This will cause '%error' to be shifted onto the stack and allow things
+            //         to move on with the next valid token after it.
+            // (1.) Skip all 'unacceptable' tokens until a valid token, if any.
+            SG_ASSERT(pValidTokenStackPositions[Token.Code] == InvalidIndex);
+            TokenType tmpToken = Token;
+            do {
+                if (tmpToken.Code == TokenCode::TokenEOF) {
+                    // If EOF was not in a valid look-ahead following %error, and we have hit
+                    // the end of file, there is nothing left to do.
+                    goto step_error;
+                }
+                if (tmpToken.Code == TokenCode::TokenError) {
+                    // There are two reasons we can end up here:
+                    //   a) Tokenizer generated TokenError because it saw unexpected characters,
+                    //      which it had no reg-exp for. If this is the case, just skip them.
+                    //   b) This is a second time through the error-handling loop for the same token.
+                    //      We've already set Token.Code = errorCode for this token and tried
+                    //      to recover, but for some reason this didn't work and we are back here.
+                    //      Fail if this is the case.
+                    if (PrevTokenIndex >= Stream.GetTokenIndex())
+                        goto step_error;
+                }
+                GetNextToken(tmpToken);
+            } while (pValidTokenStackPositions[tmpToken.Code] == InvalidIndex);
+            // If there are reductions we can do on 'error' lookahead, do them first
+            if ((pParseTable->GetAction(pStack[StackPosition].State, errorCode) &
+                 ParseTable::ReduceMask) == 0u) {
+                // (2.) Flush the remainder of stack symbols (this will also set StackPosition=sp)
+                CleanupParseStack(pValidTokenStackPositions[tmpToken.Code]);
+            }
         }
-
-        // If there are reductions we can do on 'error' lookahead, do them first
-        if ((pParseTable->GetAction(pStack[StackPosition].State, errorCode) &
-            ParseTable::ReduceMask) == 0u) {
-            // Flush the remainder of stack symbols (this will also set StackPosition=sp )
-            CleanupParseStack(pValidTokenSet[Token.Code]);
-        }
-
-        Token.Code     = errorCode;
+        // Set Token.Code to '%error', which will allow try_next_action to process appropriately,
+        // with either shift or reduce. Also backtrack by one token so that the first valid token
+        // can be re-consumed properly following an error.
         PrevTokenIndex = Stream.GetTokenIndex();
         Stream.SeekBack(1u);
+        Token.Code = errorCode;
         goto try_next_action;
     }
 
 step_error:
-
     // Clean up the parse stack by freeing all the elements
     CleanupParseStack();
     return false;

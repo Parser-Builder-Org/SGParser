@@ -7,13 +7,15 @@
 
 #include <map>
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser
+{
+namespace Generator
+{
 
 // *** Parse Table Generator class implementation
 
 // Initializes the parse table
-bool ParseTableGen::Create(Generator::Grammar& grammar, TableType tableType) {
+bool ParseTableGen::Create(Generator::Grammar& grammar, ParseTableType tableType) {
     return grammar.MakeParseTable(*this, tableType);
 }
 
@@ -51,7 +53,8 @@ void ParseTableGen::AllocateTables(size_t stateCount, size_t terminalCount,
 
 
 // Create a static parse table structure
-bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) const {
+bool ParseTableGen::CreateStaticParseTable(String& str, const String& name, 
+                                           const String& namespaceName) const {
     // The ParseTable must be valid
     if (!IsValid())
         return false;
@@ -86,23 +89,26 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
 
     String dest;
 
+    // *** Add the includes
+
+    dest += "#include \"ParseTableType.h\"\n\n#include <cstdint>\n\n";
+
+    // *** Add namespace declaration if needed
+
+    if (!namespaceName.empty())
+        dest += "namespace " + namespaceName + "\n{\n\n";
+
     // *** Add the Action table
 
-    dest += "static uint16_t ";
-    dest += name;
-    dest += "_ActionTable[";
-    dest += actionHeightStr;
-    dest += "][";
-    dest += actionWidthStr;
-    dest += "] =\n{\n";
+    dest += "static uint16_t " + name + "_ActionTable[" +
+            actionHeightStr + "][" + actionWidthStr +"] =\n{\n";
 
     // Go through all the transitions and add them
     for (size_t h = 0u; h < actionHeight; ++h) {
         dest += "    {";
         auto sep = "";
         for (size_t w = 0u; w < ActionWidth; ++w) {
-            dest += sep;
-            dest += StringWithFormat("0x%04X", unsigned(ActionTable[h][w]));
+            dest += sep + StringWithFormat("0x%04X", unsigned(ActionTable[h][w]));
             sep = ", ";
         }
         dest += "}";
@@ -116,21 +122,15 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
 
     // *** Add the Goto table
 
-    dest += "static uint16_t ";
-    dest += name;
-    dest += "_GotoTable[";
-    dest += gotoHeightStr;
-    dest += "][";
-    dest += gotoWidthStr;
-    dest += "] =\n{\n";
+    dest += "static uint16_t " + name + "_GotoTable[" +
+            gotoHeightStr + "][" + gotoWidthStr + "] =\n{\n";
 
     // Go through all the transitions and add them
     for (size_t h = 0u; h < gotoHeight; ++h) {
         dest += "    {";
         auto sep = "";
         for (size_t w = 0u; w < GotoWidth; ++w) {
-            dest += sep;
-            dest += StringWithFormat("0x%04X", unsigned(GotoTable[h][w]));
+            dest += sep + StringWithFormat("0x%04X", unsigned(GotoTable[h][w]));
             sep = ", ";
         }
         dest += "}";
@@ -145,19 +145,13 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
     if (rpSize > 0u) {
         // *** Add the Reduce production table
 
-        dest += "static uint32_t ";
-        dest += name;
-        dest += "_ReduceProduction[";
-        dest += rpSizeStr;
-        dest += "][4] =\n{\n    ";
+        dest += "static uint32_t " + name + "_ReduceProduction[" + rpSizeStr + "][4] =\n{\n    ";
 
         size_t i = 1u;
         // Go through all the accept states and add them
         for (const auto [length, left, notReported, errorTerminalFlag]: ReduceProductions) {
-            dest += StringWithFormat("{%u", unsigned(length));
-            dest += StringWithFormat(", %u", unsigned(left));
-            dest += StringWithFormat(", %u", unsigned(notReported));
-            dest += StringWithFormat(", %u}", unsigned(errorTerminalFlag));
+            dest += StringWithFormat("{%u, %u, %u, %u}", unsigned(length), unsigned(left),
+                                     unsigned(notReported), unsigned(errorTerminalFlag));
 
             if (i % rpRowCount == 0u)
                 dest += i != rpSize ? ",\n    " : "\n";
@@ -171,11 +165,7 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
     if (ntSize > 0u) {
         // *** Add the Non Terminals
 
-        dest += "static uint16_t ";
-        dest += name;
-        dest += "_Nonterminals[";
-        dest += ntSizeStr;
-        dest += "] =\n{\n    ";
+        dest += "static uint16_t " + name +"_Nonterminals[" + ntSizeStr + "] =\n{\n    ";
 
         size_t i = 1u;
         // Go through all the accept states and add them
@@ -194,11 +184,7 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
     if (tSize > 0u) {
         // *** Add the Terminals
 
-        dest += "static uint8_t ";
-        dest += name;
-        dest += "_Terminals[";
-        dest += tSizeStr;
-        dest += "] =\n{\n    ";
+        dest += "static uint8_t " + name + "_Terminals[" + tSizeStr + "] =\n{\n    ";
 
         size_t i = 1u;
         // Go through all the accept states and add them
@@ -217,17 +203,12 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
     if (siSize > 0u) {
         // *** Add the StateInfos
 
-        dest += "static uint8_t ";
-        dest += name;
-        dest += "_StateInfos[";
-        dest += siSizeStr;
-        dest += "][2] =\n{\n    ";
+        dest += "static uint8_t " + name + "_StateInfos[" + siSizeStr + "][2] =\n{\n    ";
 
         size_t i = 1u;
         // Go through all the accept states and add them
         for (const auto [record, backtrackOnError]: StateInfos) {
-            dest += StringWithFormat("{%u", unsigned(record));
-            dest += StringWithFormat(", %u}", unsigned(backtrackOnError));
+            dest += StringWithFormat("{%u, %u}", unsigned(record), unsigned(backtrackOnError));
 
             if (i % siRowCount == 0u)
                 dest += i != siSize ? ",\n    " : "\n";
@@ -241,11 +222,8 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
     if (petSize > 0u) {
         // *** Add the Production Error Terminals
 
-        dest += "static uint32_t ";
-        dest += name;
-        dest += "_ProductionErrorTerminals[";
-        dest += petSizeStr;
-        dest += "][2] =\n{\n    ";
+        dest += "static uint32_t " + name + "_ProductionErrorTerminals[" +
+                petSizeStr + "][2] =\n{\n    ";
 
         // Create an ordered map from (unordered) ProductionErrorTerminals
         // only for the sake of pretty looking output
@@ -253,9 +231,8 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
                                                               ProductionErrorTerminals.end()};
         size_t i = 1u;
         // Go through all the accept states and add them
-        for (const auto [prodId, errorTerminal]: sortedProdErrorTerminals) {
-            dest += StringWithFormat("{%u", prodId);
-            dest += StringWithFormat(", %u}", errorTerminal);
+        for (const auto& [prodId, errorTerminal]: sortedProdErrorTerminals) {
+            dest += StringWithFormat("{%u, %u}", prodId, errorTerminal);
 
             if (i % rpRowCount == 0u)
                 dest += i != rpSize ? ",\n    " : "\n";
@@ -268,95 +245,82 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name) cons
 
     // *** Add the StaticParseTable structure
 
-    dest += "static StaticParseTable ";
-    dest += name;
-    dest += " =\n{\n    ";
+    dest += "static SGParser::StaticParseTable " + name + " =\n{\n    ";
 
     // The table type
-    dest += "ParseTable::TableType::";
+    dest += "SGParser::ParseTableType::";
     switch (Type) {
         // Set initially, no table
-        case TableType::None:
+        case ParseTableType::None:
             dest += "None";
             break;
             // LR(1) parsing table
-        case TableType::LR:
+        case ParseTableType::LR:
             dest += "LR";
             break;
             // LALR(1) parsing table
-        case TableType::LALR:
+        case ParseTableType::LALR:
             dest += "LALR";
             break;
             // Compacted LR(1) parsing table (similar to LALR,
             // but won't generate erroneous reduce-reduce conflicts)
-        case TableType::CLR:
+        case ParseTableType::CLR:
             dest += "CLR";
             break;
     }
     dest += ",\n    ";
 
     // Action table entry
-    dest += actionHeightStr;
-    dest += ",\n    ";
-    dest += actionWidthStr;
-    dest += ",\n    ";
-    dest += name;
-    dest += "_ActionTable[0u],\n    ";
+    dest += actionHeightStr + "u,\n    " + actionWidthStr + "u,\n    " +
+            name + "_ActionTable[0u],\n    ";
 
     // Goto table entry
-    dest += gotoHeightStr;
-    dest += ",\n    ";
-    dest += gotoWidthStr;
-    dest += ",\n    ";
-    dest += name;
-    dest += "_GotoTable[0u],\n    ";
+    dest += gotoHeightStr + "u,\n    " + gotoWidthStr + "u,\n    " +
+            name + "_GotoTable[0u],\n    ";
 
     // Reduce Production entry
-    dest += rpSizeStr;
-    dest += ",\n    ";
-    if (rpSize > 0u) {
-        dest += name;
-        dest += "_ReduceProduction[0u],\n    ";
-    } else
+    dest += rpSizeStr + "u,\n    ";
+    if (rpSize > 0u)
+        dest += name + "_ReduceProduction[0u],\n    ";
+    else
         dest += "nullptr,\n    ";
 
     // NonTerminal entry
-    dest += ntSizeStr;
-    dest += ",\n    ";
-    if (ntSize > 0u) {
-        dest += name;
-        dest += "_Nonterminals,\n    ";
-    } else
+    dest += ntSizeStr + "u,\n    ";
+    if (ntSize > 0u)
+        dest += name + "_Nonterminals,\n    ";
+    else
         dest += "nullptr,\n    ";
 
     // Terminal entry
-    dest += tSizeStr;        
-    dest += ",\n    ";
-    if (tSize > 0u) {
-        dest += name;
-        dest += "_Terminals,\n    ";
-    } else
+    dest += tSizeStr + "u,\n    ";
+    if (tSize > 0u)
+        dest += name + "_Terminals,\n    ";
+    else
         dest += "nullptr,\n    ";
 
     // StateInfo entry
-    dest += siSizeStr;        
-    dest += ",\n    ";
-    if (siSize > 0u) {
-        dest += name;
-        dest += "_StateInfos[0u],\n    ";
-    } else
+    dest += siSizeStr + "u,\n    ";
+    if (siSize > 0u)
+        dest += name + "_StateInfos[0u],\n    ";
+    else
         dest += "nullptr,\n    ";
 
     // Production Error Terminal entry
-    dest += petSizeStr;       
-    dest += ",\n    ";
-    if (petSize > 0u) {
-        dest += name;
-        dest += "_ProductionErrorTerminals[0u]\n    };";
-    } else
+    dest += petSizeStr + "u,\n    ";
+    if (petSize > 0u)
+        dest += name + "_ProductionErrorTerminals[0u]\n    };";
+    else
         dest += "nullptr\n};\n";
+
+    // Close namespace declaration of needed
+    if (!namespaceName.empty())
+        dest += "\n} // namespace " + namespaceName + "\n";
 
     str.swap(dest);
 
     return true;
 }
+
+} // namespace Generator
+} // namespace SGParser

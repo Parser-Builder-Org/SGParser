@@ -1,4 +1,10 @@
+// This is a generated file.
+// Copyright is in `CmdLineParser.gr` - see that file for details.
+
 //////////////////////////// NonTermEnum ////////////////////////////
+
+namespace XC
+{
 
 enum class NonTermEnum
 {
@@ -9,26 +15,27 @@ enum class NonTermEnum
     /*4*/ Option,
     /*5*/ ParseDataParamList,
     /*6*/ ParseDataParam,
-    /*7*/ EnumFileParam,
-    /*8*/ TermEnumParamList,
-    /*9*/ TermEnumParam,
-    /*10*/ ClassName,
-    /*11*/ NonTermEnumParamList,
-    /*12*/ NonTermEnumParam,
-    /*13*/ ProdEnumParamList,
-    /*14*/ ProdEnumParam,
-    /*15*/ ReduceFuncParamList,
-    /*16*/ ReduceFuncParam,
-    /*17*/ StaticDFAParamList,
-    /*18*/ StaticDFAParam,
-    /*19*/ StaticParseTableParamList,
-    /*20*/ StaticParseTableParam,
-    /*21*/ CanonicalParam,
-    /*22*/ ConflictReportParamList,
-    /*23*/ ConflictReportParam,
-    /*24*/ HelpParamList,
-    /*25*/ HelpParam,
-    /*26*/ CmdLineGrammarParam
+    /*7*/ NamespaceParam,
+    /*8*/ ClassName,
+    /*9*/ EnumFileParam,
+    /*10*/ TermEnumParamList,
+    /*11*/ TermEnumParam,
+    /*12*/ NonTermEnumParamList,
+    /*13*/ NonTermEnumParam,
+    /*14*/ ProdEnumParamList,
+    /*15*/ ProdEnumParam,
+    /*16*/ ReduceFuncParamList,
+    /*17*/ ReduceFuncParam,
+    /*18*/ StaticDFAParamList,
+    /*19*/ StaticDFAParam,
+    /*20*/ StaticParseTableParamList,
+    /*21*/ StaticParseTableParam,
+    /*22*/ CanonicalParam,
+    /*23*/ ConflictReportParamList,
+    /*24*/ ConflictReportParam,
+    /*25*/ HelpParamList,
+    /*26*/ HelpParam,
+    /*27*/ CmdLineGrammarParam
 };
 
 constexpr char const* const StringifyEnumNonTermEnum[] =
@@ -40,24 +47,27 @@ constexpr char const* const StringifyEnumNonTermEnum[] =
     /*4*/ "Option",
     /*5*/ "ParseDataParamList",
     /*6*/ "ParseDataParam",
-    /*7*/ "EnumFileParam",
-    /*8*/ "TermEnumParamList",
-    /*9*/ "TermEnumParam",
-    /*10*/ "ClassName",
-    /*11*/ "NonTermEnumParamList",
-    /*12*/ "NonTermEnumParam",
-    /*13*/ "ProdEnumParamList",
-    /*14*/ "ProdEnumParam",
-    /*15*/ "ReduceFuncParamList",
-    /*16*/ "ReduceFuncParam",
-    /*17*/ "StaticDFAParamList",
-    /*18*/ "StaticDFAParam",
-    /*19*/ "StaticParseTableParamList",
-    /*20*/ "StaticParseTableParam",
-    /*21*/ "CanonicalParam",
-    /*22*/ "ConflictReportParamList",
-    /*23*/ "ConflictReportParam",
-    /*24*/ "HelpParamList",
-    /*25*/ "HelpParam",
-    /*26*/ "CmdLineGrammarParam"
+    /*7*/ "NamespaceParam",
+    /*8*/ "ClassName",
+    /*9*/ "EnumFileParam",
+    /*10*/ "TermEnumParamList",
+    /*11*/ "TermEnumParam",
+    /*12*/ "NonTermEnumParamList",
+    /*13*/ "NonTermEnumParam",
+    /*14*/ "ProdEnumParamList",
+    /*15*/ "ProdEnumParam",
+    /*16*/ "ReduceFuncParamList",
+    /*17*/ "ReduceFuncParam",
+    /*18*/ "StaticDFAParamList",
+    /*19*/ "StaticDFAParam",
+    /*20*/ "StaticParseTableParamList",
+    /*21*/ "StaticParseTableParam",
+    /*22*/ "CanonicalParam",
+    /*23*/ "ConflictReportParamList",
+    /*24*/ "ConflictReportParam",
+    /*25*/ "HelpParamList",
+    /*26*/ "HelpParam",
+    /*27*/ "CmdLineGrammarParam"
 };
+
+} // namespace XC

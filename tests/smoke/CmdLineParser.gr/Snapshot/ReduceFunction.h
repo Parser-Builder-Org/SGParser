@@ -1,3 +1,6 @@
+// This is a generated file.
+// Copyright is in `CmdLineParser.gr` - see that file for details.
+
 bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
 {
     switch (productionID)
@@ -60,6 +63,18 @@ bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
 
         // ParseDataParam -> '+display' 
         case PE_ParseDataDisplayParam:
+            break;
+
+        // Option -> '-namespaces' NamespaceParam 
+        case PE_NamespaceOption:
+            break;
+
+        // NamespaceParam -> '+nsname' ':' ClassName 
+        case PE_NamespaceClassNameParam:
+            break;
+
+        // NamespaceParam -> <empty>
+        case PE_NamespaceClassNameParamEmpty:
             break;
 
         // Option -> '-enumfile' EnumFileParam 
@@ -339,5 +354,5 @@ bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
             break;
 
     }
-    return 1u;
+    return true;
 }

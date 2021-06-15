@@ -9,8 +9,10 @@
 #include "NFA.h"
 #include "Tokenizer.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** NonDeterministic Finite Automaton - NFA
 
@@ -400,3 +402,6 @@ void    NFA::AddLink(NFANode* modify, unsigned c, NFANode* target) {
     modify->LinkChar.push_back(c);
     modify->LinkPtr.push_back(target);
 }
+
+} // namespace Generator
+} // namespace SGParser

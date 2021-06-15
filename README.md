@@ -31,9 +31,9 @@ Some reasons you might want to use SGParser instead of 'yacc' include:
 ## Repo Structure
 ```
 .
-├── build.sh                                  # Build debug/release version of 64-bit SGYacc
-├── build.bat                                 # Build script wrapper
-├── build.ps1                                 # Build debug/release version of 32/64-bit SGYacc with MSVC
+├── build.bat                                 # Build debug/release version of 32/64-bit SGYacc on Windows (wrapper for PowerShell script)
+├── build.ps1                                 # Build debug/release version of 32/64-bit SGYacc on Windows (PowerShell script)
+├── build.sh                                  # Build debug/release version of 64-bit SGYacc on Linux, macOS or WSL (Bash script)
 ├── CMakeLists.txt                            # Root CMake project file
 ├── CONTRIBUTING.md                           # Information about how to contribute to Parser project
 ├── LICENSE                                   # MIT License
@@ -60,6 +60,9 @@ Some reasons you might want to use SGParser instead of 'yacc' include:
 │   │   └── ...
 │   └── SGYacc                                # SGYacc command-line application
 │       └── ...
+├── support
+│   └── build                                 # Build helper scripts
+│       └── ...
 └── tests                                     # Tests and test-related files
     ├── Calc.gr                               # Sample calculator grammar
     ├── CPre.ycc                              # Grammar for C preprocessor
@@ -73,9 +76,9 @@ Some reasons you might want to use SGParser instead of 'yacc' include:
         │       └── ...                       # Pre-generated etalon files for CmdLineParser.gr grammar
         ├── grammar.lst                       # Grammar list for smoke test runner
         ├── README.md                         # Smoke tests documentation
-        ├── run.bat                           # Smoke test runner main script for 32/64-bit Microsoft Windows build
-        ├── run.ps1                           # Smoke test runner PowerShell script (used by run.bat)
-        └── run.sh                            # Smoke test runner Bash script
+        ├── smoke.bat                         # Smoke test runner for 32/64-bit SGYacc builds on Windows (wrapper for PowerShell script)
+        ├── smoke.ps1                         # Smoke test runner for 32/64-bit SGYacc builds on Windows (PowerShell script)
+        └── smoke.sh                          # Smoke test runner for 64-bit SGYacc on Linux, macOS or WSL (Bash script)
 ```
 
 ## Build
@@ -93,55 +96,59 @@ There are a bunch of scripts to build the parser binaries by one command.
 
 #### On Microsoft Windows
 
-Run one of the following commands to build for the x64 debug, x64 release, win32 debug, and win32 release targets, respectively.
+Run one of the following commands to build for the x86 debug, x86 release, x64 debug, and x64 release targets, respectively:
 ```bat
 build
 build --config release
-build --config debug --arch win32
-build --config release --arch win32
+build --arch x64 --config debug
+build --arch x64 --config release
+```
+Also, compiler can be specified by using `--compiler` option:
+```bat
+build --arch x64 --config release --compiler clang++
 ```
 This will generate CMake-based solutions and executables within the build folder.
 
-The release binaries get placed into the following directories correspondingly. For debug, please replace the 'Release' subdirectory with 'Debug'.
+The release binaries get placed into the following directories (`<arch>`, `<compiler>` and `<config>` will be replaced with actual values):
+`build\<arch>-<compiler>-<config>\src\Parser\Release\parser.lib`\
+`build\<arch>-<compiler>-<config>\src\ParserGen\Release\parsergen.lib`\
+`build\<arch>-<compiler>-<config>\SGYacc\Release\sgyacc.exe`
 
-- On x64 platform:
-`build\x64\src\Parser\Release\parser.lib`\
-`build\x64\src\ParserGen\Release\parsergen.lib`\
-`build\x64\SGYacc\Release\sgyacc.exe`
-
-- On win32 platform:
-`build\x86\src\Parser\Release\parser.lib`\
-`build\x86\src\Parser\Release\parsergen.lib`\
-`build\x86\SGYacc\Release\sgyacc.exe`
+For example, release build artifacts made by MSVC on Win32 platform will be:
+`build\x86-msvc-release\src\Parser\Release\parser.lib`\
+`build\x86-msvc-release\src\Parser\Release\parsergen.lib`\
+`build\x86-msvc-release\SGYacc\Release\sgyacc.exe`
 
 #### On Linux and macOS
 
-Use commands shown below to build required versions of the parser executables. Please note that only 64-bit builds are supported.
+Use commands shown below to build required versions of the parser executables. Please note that only 64-bit builds are supported:
 ```sh
 ./build.sh
 ./build.sh --config debug
 ./build.sh --config release
 ```
+Also, compiler can be specified by using `--compiler` option:
+```sh
+./build.sh --compiler clang++ --config debug
+```
 
-The binaries get placed into the following directories correspondingly.
+The binaries get placed into the following directories (`<compiler>` and `<config>` will be replaced with actual values):
+`build/x64-<compiler>-<config>/src/Parser/libparser.a`\
+`build/x64-<compiler>-<config>/src/ParserGen/libparsergen.a`\
+`build/x64-<compiler>-<config>/SGYacc/Debug/sgyacc`
 
-- Debug versions:
-`build/x64/src/Parser/libparser.a`\
-`build/x64/src/ParserGen/libparsergen.a`\
-`build/x64/SGYacc/Debug/sgyacc`
-
-- Relase versions:
-`build/x64/src/Parser/libparser.a`\
-`build/x64/src/ParserGen/libparsergen.a`\
-`build/x64/SGYacc/Release/sgyacc`
+For example, debug build artifacts made by Clang will be:
+`build/x64-clang-debug/src/Parser/libparser.a`\
+`build/x64-clang-debug/src/ParserGen/libparsergen.a`\
+`build/x64-clang-debug/SGYacc/Release/sgyacc`
 
 ## Prebuilt binaries
 
 We provide a set of prebuilt release versions of `sgyacc` executables for the following platforms:
 - Microsoft Windows 10 64-bit
 - Microsoft Windows 10 32-bit
-- Ubuntu 18.04
-- macOS 10.15.5
+- Ubuntu 20.04
+- macOS 10.15.7
 
 They can be found in the repository in the [prebuilt](prebuilt/#prebuilt) directory.
 They can be run directly from directories they reside in.
@@ -153,10 +160,10 @@ prebuit\windows_10_x64\sgyacc.exe
 prebuit\windows_10_x86\sgyacc.exe
 ```
 ```sh
-./prebuilt/ubuntu_18.04/sgyacc
+./prebuilt/ubuntu_20.04/sgyacc
 ```
 ```sh
-./prebuilt/macos_10.15.5/sgyacc
+./prebuilt/macos_10.15.7/sgyacc
 ```
 
 ## Usage

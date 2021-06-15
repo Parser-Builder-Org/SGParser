@@ -13,8 +13,10 @@
 
 #include <vector>
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Generic DFA syntax tree node used to construct a DFA from a syntax tree
 
@@ -94,7 +96,8 @@ public:
     ParseMessageBuffer& GetMessageBuffer() noexcept { return Messages; }
 
     // Create a static DFA structure
-    bool     CreateStaticDFA(String& str, const String& name) const;
+    bool     CreateStaticDFA(String& str, const String& name,
+                             const String& namespaceName = String{}) const;
 
 private:
     friend class Lex;

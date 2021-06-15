@@ -8,8 +8,10 @@
 #include "Grammar.h"
 #include "Lex.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser 
+{
+namespace Generator
+{
 
 // ***** Grammar class
 
@@ -378,8 +380,6 @@ bool Grammar::First(std::set<unsigned>& terminalsFound,
 
 // *** ParseTable generation routines
 
-namespace SGParser::Generator {
-
 // Custom conflict structure for Shift-Reduce and Reduce-Reduce
 struct Conflict final
 {
@@ -401,8 +401,6 @@ struct MakeTableData final
     std::vector<uint16_t*>&                          ActionTable;
     std::vector<std::vector<ParseTableProduction>*>& CanonicalSet;
 };
-
-} // namespace SGParser::Generator
 
 
 // Print the production array
@@ -632,7 +630,7 @@ void Grammar::PrintConflict(const MakeTableData& td, String& str, const Conflict
 
 
 // Make ParseTable out of grammar
-bool Grammar::MakeParseTable(ParseTableGen& table, ParseTable::TableType type) {
+bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
     // Check production & grammar symbol consistency
     if (!CheckProductions()) {
         GrammarSymbolsInv.clear();
@@ -751,7 +749,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTable::TableType type) {
             unsigned searchIndex = 0u;
         find_next_productionset:
             newState = unsigned(ParseTableProduction::FindVectorInSetOfSets(*pgotoSet, 
-                                    canonicalSet, searchIndex, type == ParseTable::TableType::LR));
+                                    canonicalSet, searchIndex, type == ParseTableType::LR));
             if (newState == ParseTable::InvalidState) {
                 // Make a new state for the set
                 newState = unsigned(canonicalSet.size());
@@ -771,7 +769,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTable::TableType type) {
                 auto& cSetItem = *canonicalSet[newState];
 
                 // For CLR make sure we can merge states
-                if (type == ParseTable::TableType::CLR) {
+                if (type == ParseTableType::CLR) {
                     // Combining tables in LALR can cause reduce/reduce conflicts
                     // Detect conflict, and don't merge conflicting states
 
@@ -817,7 +815,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTable::TableType type) {
                             }
                 }
 
-                if (type != ParseTable::TableType::LR) {
+                if (type != ParseTableType::LR) {
                     // Add another source state
                     sourceStates[newState].insert(state);
 
@@ -1493,26 +1491,23 @@ size_t GrammarOutputC::CreateProductionSwitch(String& str, const String& classNa
         return 0u;
 
     const String tab = "    ";
-    String dest = "";
+    String dest;
+
+    // Begin namespace declaration of needed
+    if (!namespaceName.empty())
+        dest += "namespace " + namespaceName + "\n{\n\n";
 
     // *** Function declaration
 
-    dest += "bool ";
-    dest += className;
-    dest += "::Reduce(Parse<";
-    dest += stackName;
-    dest += "> &parse, unsigned productionID)\n";
-    dest += "{\n";
+    dest += "bool " + className + "::Reduce(Parse<" + stackName +
+            "> &parse, unsigned productionID)\n{\n";
 
     // *** Switch statement declaration
 
-    if (useEnumClasses) {
-        dest += tab + "switch (static_cast<";
-        dest += enumClassName;
-        dest += ">(productionID))\n";
-    } else {
+    if (useEnumClasses)
+        dest += tab + "switch (static_cast<" + enumClassName + ">(productionID))\n";
+    else
         dest += tab + "switch (productionID)\n";
-    }
 
     dest += tab + "{\n";
 
@@ -1538,9 +1533,7 @@ size_t GrammarOutputC::CreateProductionSwitch(String& str, const String& classNa
             return 0u;
 
         // Store the comment
-        dest += tab + tab + "// ";
-        dest += *grammarSymbolsInv[prods[i]->Left];
-        dest += " -> ";
+        dest += tab + tab + "// " + *grammarSymbolsInv[prods[i]->Left] + " -> ";
 
         if (prods[i]->Length > 0u) {
             for (unsigned k = 0u; k < prods[i]->Length; ++k) {
@@ -1557,8 +1550,7 @@ size_t GrammarOutputC::CreateProductionSwitch(String& str, const String& classNa
         dest += "\n";
 
         // Store the case statements
-        dest += tab + tab + "case ";
-        dest += useEnumClasses? enumClassName + "::" + prefix : prefix;
+        dest += tab + tab + "case " + (useEnumClasses ? enumClassName + "::" + prefix : prefix);
 
         const auto& productionName = prods[i]->Name;
 
@@ -1573,14 +1565,14 @@ size_t GrammarOutputC::CreateProductionSwitch(String& str, const String& classNa
             dest += productionName == "[Accept10]" ? String{"AcceptPVMRoot"} : productionName;
         }
 
-        dest += ":\n";
-        dest += tab + tab + tab;
-        dest += "break;\n\n";
+        dest += ":\n" + tab + tab + tab + "break;\n\n";
     }
 
-    dest += tab + "}\n";
-    dest += tab + "return 1u;\n";
-    dest += "}\n";
+    dest += tab + "}\n" + tab + "return true;\n" + "}\n";
+
+    // Close namespace declaration of needed
+    if (!namespaceName.empty())
+        dest += "\n} // namespace " + namespaceName + "\n";
 
     // Clear the grammar symbol table because it did not originally exist
     grammarSymbolsInv.clear();
@@ -1692,38 +1684,43 @@ void GrammarOutputC::createEnum(String& str, const String& name, const String& p
     static_assert(std::is_invocable_r<String, EnumValueNameGenerator, size_t>::value,
                   "EnumValueNameGenerator should be callable with signature 'String(size_t)'");
 
-    str += "//////////////////////////// ";
-    str += name;
-    str += " ////////////////////////////\n\n";
+    str += "//////////////////////////// " + name + " ////////////////////////////\n\n";
+
+    // Begin namespace declaration of needed
+    if (!namespaceName.empty())
+        str += "namespace " + namespaceName + "\n{\n\n";
 
     // Enum type declaration
-    str += useEnumClasses ? "enum class " : "enum ";
-    str += name;
-    str += "\n{\n";
+    str += (useEnumClasses ? "enum class " : "enum ") + name + "\n{\n";
 
     // Generate strings with the enum values, optionally enclose every value with 'enclosure'
     // string
-    const auto listEnumValues = [&](const String& enclosure = "") {
+    const auto listEnumValues = [&](const String& enclosure = String{}) {
         for (size_t i = 0u; i < size; ++i) {
-            // Create comment with the value index
-            str += StringWithFormat("    /*%zu*/ ", i);
-            // Generate and add an enclosed enum value name
-            str += enclosure + prefix + enumValueNameGenerator(i) + enclosure;
-            str += i != size - 1u ? ",\n" : "\n";
+            // Create comment with the value index, then
+            // generate and add an enclosed enum value name
+            str += StringWithFormat("    /*%zu*/ ", i) +
+                   enclosure + prefix + enumValueNameGenerator(i) + enclosure +
+                   (i != size - 1u ? ",\n" : "\n");
         }
     };
 
     listEnumValues();
 
-    str += "};";
+    str += "};\n";
 
     // if needed, add an array of string literals to simplify an enum stringification
     if (createEnumStrings) {
-        str += "\n\nconstexpr char const* const StringifyEnum";
-        str += name;
-        str += "[] =\n{\n";
+        str += "\nconstexpr char const* const StringifyEnum" + name + "[] =\n{\n";
         // Generate strings as the enum values enclosed with double quotes
         listEnumValues("\"");
         str += "};\n";
     }
+
+    // Close namespace declaration of needed
+    if (!namespaceName.empty())
+        str += "\n} // namespace " + namespaceName + "\n";
 }
+
+} // namespace Generator
+} // namespace SGParser

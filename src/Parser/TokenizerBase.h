@@ -7,12 +7,13 @@
 
 #include "SGStream.h"
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Tokenizer's Data Buffer
 
 // Linked list of buffers is used, to allow for arbitrary length lexemes
-struct TokenizerBuffer 
+struct TokenizerBuffer
 {
     static constexpr size_t BufferSize  = 8192u;
 
@@ -28,7 +29,7 @@ struct TokenizerBuffer
 
 // Tokenizer base class that implements buffer support
 // This can be shared among all template tokenizer instances
-class TokenizerBase 
+class TokenizerBase
 {
 public:
     // Default constructor
@@ -73,7 +74,7 @@ public:
     // since this requires pHeadBuffer and pTailBuffer to be non-null
     void AdjustHead() noexcept;
 
-    // Byte reader implementations for both initial token character reading token 
+    // Byte reader implementations for both initial token character reading token
     // string re-scanning. We always start out at the first byte available
     // (unless IsEOF() is true) and can call Advance() for more
     class ByteReader final
@@ -106,7 +107,7 @@ public:
     // Readjust tail buffer; useful when we overshoot the tail
     // end of the token due to lexical scanning look-ahead
     void      SetTailPos(const BufferPos& src) noexcept {
-        pTail       = src.pChar; 
+        pTail       = src.pChar;
         pTailBuffer = src.pBuffer;
     }
 
@@ -115,7 +116,7 @@ public:
     class BufferRangeByteReader final
     {
     public:
-        BufferRangeByteReader(const BufferPos& head, const BufferPos& tail) 
+        BufferRangeByteReader(const BufferPos& head, const BufferPos& tail)
             : Head{head},
               Tail{tail} {
         }

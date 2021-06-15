@@ -6,7 +6,8 @@
 
 #include "DFA.h"
 
-using namespace SGParser;
+namespace SGParser 
+{
 
 // ***** Deterministic Finite Automaton
 
@@ -95,3 +96,5 @@ void DFA::PrintDFADotty(String& str) const {
 
     str.swap(dest);
 }
+
+} // namespace SGParser

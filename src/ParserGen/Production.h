@@ -12,8 +12,10 @@
 #include <set>
 #include <vector>
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Production
 

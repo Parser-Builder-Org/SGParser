@@ -7,7 +7,8 @@
 
 #include <unordered_map>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // *** MappedTable class
 

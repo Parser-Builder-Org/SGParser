@@ -53,6 +53,9 @@
     <ClInclude Include="..\..\..\src\Parser\LexemeInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\Parser\ParseTableType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Parser\ParseTable.cpp">

@@ -1,12 +1,16 @@
-// Filename:  CalcParser.hpp
+// Filename:  CalcParser.h
 // Content:   Calculator parser definition
 // Provided AS IS under MIT License; see LICENSE file in root folder.
 
-#ifndef INC_SGPARSER_SAMPLE_CALC_CALCPARSER_HPP
-#define INC_SGPARSER_SAMPLE_CALC_CALCPARSER_HPP
+#ifndef INC_SGPARSER_SAMPLE_CALC_CALC_PARSER_H
+#define INC_SGPARSER_SAMPLE_CALC_CALC_PARSER_H
 
-#include "StdStreamAdapter.hpp"
+#include "StdStreamAdapter.h"
 #include "Parser.h"
+
+#include "DFA.h"
+#include "ParseTable.h"
+#include "ProdEnum.h"
 
 #include <fstream>
 #include <map>
@@ -14,13 +18,8 @@
 #include <vector>
 #include <cmath>
 
-namespace Calc {
-
-using namespace SGParser;
-
-#include "DFA.h"
-#include "ParseTable.h"
-#include "ProdEnum.h"
+namespace Calc 
+{
 
 // Parser used to parse text written in calculator grammar
 class CalcParser final : public SGParser::ParseHandler<SGParser::ParseStackGenericElement>
@@ -170,4 +169,4 @@ private:
 
 } // namespace Calc
 
-#endif // INC_SGPARSER_SAMPLE_CALC_CALCPARSER_HPP
+#endif // INC_SGPARSER_SAMPLE_CALC_CALC_PARSER_H

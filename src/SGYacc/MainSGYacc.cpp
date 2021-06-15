@@ -10,8 +10,8 @@
 
 // *** Main SGYacc program loop
 
-int main(int argc, char* argv[]) {
-    using namespace std;
+int main(int argc, char* argv[])
+{
     using namespace SGParser;
     using namespace Generator;
     using namespace Yacc;
@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
     CmdLineParseHandler             cmdLineParseHandler;
 
     // Message data
-    vector<ParseMessage> loadMessages;
-    vector<ParseMessage> parseMessages;
+    std::vector<ParseMessage> loadMessages;
+    std::vector<ParseMessage> parseMessages;
 
     // Input data
     MemBufferInputStream exprStringInput;
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Make a parse table
-    if (!parseData.MakeParseTable(parseTable, ParseTable::TableType::CLR)) {
+    if (!parseData.MakeParseTable(parseTable, ParseTableType::CLR)) {
         str   = "Failed to create the parse table";
         error = 4;
         goto finished_parsing;
@@ -145,7 +145,7 @@ finished_parsing:
                 parseData.GetMessageBuffer().GetMessageCount(ParseMessageBuffer::MessageNote);
 
             // Create a vector of messages strings
-            vector<String> msgStrings;
+            std::vector<String> msgStrings;
             parseData.GetMessageBuffer().PrintMessages(msgStrings);
 
             // Print out all the messages

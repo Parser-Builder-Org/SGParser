@@ -26,7 +26,6 @@
     <ClInclude Include="..\..\..\src\SGYacc\CmdLineGrammar.h" />
     <ClInclude Include="..\..\..\src\SGYacc\CmdLineParser.h" />
     <ClInclude Include="..\..\..\src\SGYacc\CmdLineProdEnum.h" />
-    <ClInclude Include="..\..\..\src\SGYacc\FileStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.vcxproj">
@@ -71,6 +70,14 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <ArchName Condition="'$(Platform)'=='x64'">x64</ArchName>
+    <ArchName Condition="'$(Platform)'=='Win32'">x86</ArchName>
+    <BuildDirName>..\..\..\build\$(ArchName)-msvc-$(Configuration.ToLower())\</BuildDirName>
+    <OutDir>$(BuildDirName)$(ProjectName)\</OutDir>
+    <IntDir>$(BuildDirName)$(ProjectName)_intermediate\</IntDir>
+    <TargetName>$(ProjectName.ToLower())</TargetName>
+  </PropertyGroup>
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -90,27 +97,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>$(ProjectName)</TargetName>
-    <OutDir>..\..\..\build\x86\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>..\..\..\build\x86\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\build\x64\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>..\..\..\build\x64\$(ProjectName)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)</TargetName>
-    <OutDir>..\..\..\build\x86\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>..\..\..\build\x86\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\build\x64\$(ProjectName)\$(Configuration)\</OutDir>
-    <IntDir>..\..\..\build\x64\$(ProjectName)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -123,10 +118,13 @@
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>../../../src/Parser;../../../src/Parser/Kernel;../../../src/ParserGen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,10 +138,13 @@
       <AdditionalIncludeDirectories>../../../src/Parser;../../../src/Parser/Kernel;../../../src/ParserGen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -159,12 +160,15 @@
       <PrecompiledHeaderFile />
       <AdditionalIncludeDirectories>../../../src/Parser;../../../src/Parser/Kernel;../../../src/ParserGen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -180,12 +184,15 @@
       <AdditionalIncludeDirectories>../../../src/Parser;../../../src/Parser/Kernel;../../../src/ParserGen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

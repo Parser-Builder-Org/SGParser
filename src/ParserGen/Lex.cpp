@@ -6,10 +6,10 @@
 #include "RegExprProdEnum.h" // Include regular expression production enumeration for parsing
 #include "RegExpTokenizer.h"
 
-using namespace SGParser;
-using namespace Generator;
-
-namespace SGParser::Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 struct RegExprParseToken final : public TokenCode 
 {
@@ -850,14 +850,6 @@ public:
     }
 };
 
-} // namespace SGParser::Generator 
-
-
-// Explicit templates instantiation
-
-template class SGParser::Parse<RegExprNFAParseElement>;
-template class SGParser::Parse<RegExprDFAParseElement>;
-
 
 // *** Lexeme info
 
@@ -1396,3 +1388,6 @@ void Lex::CheckForErrorAndReport(const char* message...) {
         Messages.AddMessage(msg);
     }
 }
+
+} // namespace Generator
+} // namespace SGParser

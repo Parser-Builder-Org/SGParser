@@ -19,10 +19,14 @@ To run the tests from the repository root simply run one of the following comman
 .\tests\smoke\run --config release
 ```
 ```bat
-.\tests\smoke\run --arch win32
+.\tests\smoke\run --arch x64
 ```
 ```bat
-.\tests\smoke\run --config release --arch win32
+.\tests\smoke\run --config release --arch x64
+```
+Also, compiler can be specified by using `--compiler` option:
+```bat
+.\tests\smoke\run --arch x64 --config release --compiler clang++
 ```
 
 No output will be shown in case if the tests are passed.
@@ -62,6 +66,10 @@ To run the tests from the repository root simply run one of the following comman
 ```
 ```sh
 ./tests/smoke/run.sh --config release
+```
+Also, compiler can be specified by using `--compiler` option:
+```sh
+./tests/smoke/run.sh --compiler clang++
 ```
 
 In case if the tests are passed you will see the following:

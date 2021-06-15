@@ -4,14 +4,19 @@
 
 #include "CmdLineParser.h"
 #include "CmdLineProdEnum.h"
-#include "FileStream.h"
+#include "FileInputStream.h"
+#include "FileOutputStream.h"
 
-using namespace std;
-using namespace SGParser;
-using namespace Generator;
-using namespace Yacc;
+#include <filesystem>
 
-namespace { // anonymous
+namespace SGParser
+{
+namespace Generator
+{
+namespace Yacc
+{
+namespace // anonymous
+{
 
 // *** Generic Parse Handler
 
@@ -19,8 +24,8 @@ namespace { // anonymous
 class GenericParseHandler final : public ParseHandler<ParseStackGenericElement>
 {
 public:
-    vector<Production*> Productions; // List of productions
-    ParseMessageBuffer  Messages;    // Stores a set of reduction messages if stats are enabled
+    std::vector<Production*> Productions; // List of productions
+    ParseMessageBuffer       Messages;    // Stores a set of reduction messages if stats are enabled
 
     // Overridden reduce function
     bool Reduce(Parse<ParseStackGenericElement> &parse, unsigned productionID) override;
@@ -72,9 +77,8 @@ void CmdLineParseHandler::SetOptionParam(const String& option, const String& par
 // Checks to see if an option parameter exists
 bool CmdLineParseHandler::CheckOptionParam(const String& optionName,
                                            const String& paramName) const {
-    const auto option = Options.find(optionName);
     // If the option is found than search for the parameter
-    if (option != Options.end()) {
+    if (const auto option = Options.find(optionName); option != Options.end()) {
         const auto& poption = option->second;
         return (poption.Params.find(paramName) != poption.Params.end());
     }
@@ -84,21 +88,25 @@ bool CmdLineParseHandler::CheckOptionParam(const String& optionName,
 
 // Get the option parameter value and store it in the destination string
 bool CmdLineParseHandler::GetOptionParam(const String& optionName, const String& paramName,
-                                         String* pdest) const {
-    const auto ioption = Options.find(optionName);
+                                         String& dest) const {
     // If the option exists then try to find the parameter
-    if (ioption != Options.end()) {
+    if (const auto ioption = Options.find(optionName); ioption != Options.end()) {
         const auto& poption = ioption->second;
         // If the parameter exists then set the destination to its value and return success
-        const auto iparam = poption.Params.find(paramName);
-        if (iparam != poption.Params.end()) {
-            *pdest = iparam->second.Value;
+        if (const auto iparam = poption.Params.find(paramName); iparam != poption.Params.end()) {
+            dest = iparam->second.Value;
             return true;
         }
     }
     return false;
 }
 
+// Generate pseudo-copyright header string based on GrammarFileName
+String CmdLineParseHandler::CopyrightHeader() const {
+    return "// This is a generated file.\n// Copyright is in `" +
+           std::filesystem::path{GrammarFileName}.filename().string() +
+           "` - see that file for details.\n\n";
+}
 
 // Add a duplicate parameter message
 void CmdLineParseHandler::AddDuplicateOptionMessage([[maybe_unused]] char* poption) {
@@ -187,7 +195,12 @@ bool CmdLineParseHandler::Reduce(Parse<ParseStackGenericElement>& parse, unsigne
             SetOption("ParseData");
             break;
 
-        // Option -> '-canonical' EnumFileParamList
+        // Option -> '-namespaces' NamespaceParam
+        case CL_NamespaceOption:
+            SetOption("Namespaces");
+            break;
+
+            // Option -> '-canonical' EnumFileParamList
         case CL_EnumFileOption:
             SetOption("EnumFile");
             break;
@@ -298,6 +311,15 @@ bool CmdLineParseHandler::Reduce(Parse<ParseStackGenericElement>& parse, unsigne
         // ParseDataDisplayParam -> '+display'
         case CL_ParseDataDisplayParam:
             SetOptionParam("ParseData", "PrintReductions", "1");
+            break;
+
+        // NamespaceParam -> '+nsname' ':' ClassName
+        case CL_NamespaceClassNameParam:
+            SetOptionParam("Namespaces", "Classname", parse[2].Str);
+            break;
+
+        // NamespaceParam -> <empty>
+        case CL_NamespaceClassNameParamEmpty:
             break;
 
         // EnumFileParam -> '+filename' ':' FileName
@@ -532,6 +554,8 @@ const char* CmdLineParseHandler::GetHelpText() const noexcept {
         "                          [[+f[ilename]]:<targetfile>] filename for all files\n"
         "-enumclasses          Use 'enum class' instead of 'enum'\n"
         "-enumstrings          Create string literals for enumeration stringification\n"
+        "-ns,-namespaces       Enclose generated code into a namespace\n"
+        "                          [+nsname:<namespacename>]    namespace name\n"
         "-rf,-reducefunc       Make reduce function\n"
         "                          [+f[ilename]:<targetfile>]   function output file\n"
         "                          [+c[lassname]:<classname>]   ParseHandler classname\n"
@@ -568,8 +592,8 @@ const char* CmdLineParseHandler::GetHelpText() const noexcept {
 
 struct OutputBuffer final
 {
-    vector<String> Buffer;
-    bool           Quiet;
+    std::vector<String> Buffer;
+    bool                Quiet;
 
     void Add(const String& str) {
         if (Quiet)
@@ -592,12 +616,13 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
     GenericParseHandler             parseHandler;
 
     // Message data
-    vector<ParseMessage> loadGrammarMessages;
-    ParseMessageBuffer*  pmessages = &parseData.GetMessageBuffer();
+    std::vector<ParseMessage> loadGrammarMessages;
+    ParseMessageBuffer*       pmessages = &parseData.GetMessageBuffer();
 
     bool         writeEnums = false;
     auto         fileFlags = FileOutputStream::Mode::Truncate;
     String       enumFilename;
+    String       copyrightHeader;
     OutputBuffer output;
 
     // *** Preprocessing options
@@ -624,17 +649,6 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         // Parse the configuration file
     }
 
-    // Post processing options
-    const bool useEnumClasses    = CheckOption("EnumClasses");
-    const bool createEnumStrings = CheckOption("EnumStrings");
-
-    // Help
-    if (CheckOption("Help")) {
-        // Display help and return
-        output.Add(GetHelpText());
-        goto output_results;
-    }
-
     // Version
     if (CheckOption("Version"))
         output.Add("\nSimple Grammar Parser Generator [Version 1.0]\n"
@@ -646,22 +660,47 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
                      CheckOption("NonTermEnum"));
         enumFilename = "ParseEnum.h";
         // Set filename to default if empty
-        GetOptionParam("EnumFile", "Filename", &enumFilename);
+        GetOptionParam("EnumFile", "Filename", enumFilename);
+    }
+
+    // Use namespaces
+    const bool useNamespaces = CheckOption("Namespaces");
+    String     namespaceName;
+       
+    if (useNamespaces) {
+        GetOptionParam("Namespaces", "Classname", namespaceName);
+        if (namespaceName.empty())
+            namespaceName = "Generated"; // Default namespace name
+        output.Add("Use namespace " + namespaceName);
     }
 
     // Use 'enum class'
-    if (CheckOption("EnumClasses"))
+    const bool useEnumClasses = CheckOption("EnumClasses");
+
+    if (useEnumClasses)
         output.Add("Use 'enum class' instead of 'enums'");
 
     // Create string literals for enumeration stringification
-    if (CheckOption("EnumStrings"))
+    const bool createEnumStrings = CheckOption("EnumStrings");
+
+    if (createEnumStrings)
         output.Add("Create string literals for enumeration stringification");
+
+    // Help
+    if (CheckOption("Help")) {
+        // Display help and return
+        output.Add(GetHelpText());
+        goto output_results;
+    }
 
     // *** Parse the grammar file
 
     // If no grammar file was passed than finish up
     if (GrammarFileName.empty())
         goto output_results;
+
+    // Generate the pseudo-copyright header string
+    copyrightHeader = CopyrightHeader(); 
 
     // Store all errors in the load message list
     pmessages->SetMessageBuffer(&loadGrammarMessages,
@@ -726,15 +765,15 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
     // If it wasn't set than set it to the default type - CLR
     {
         String tableTypeStr;
-        auto   tableType = ParseTable::TableType::CLR;
+        auto   tableType = ParseTableType::CLR;
 
-        if (GetOptionParam("TableType", "Type", &tableTypeStr)) {
+        if (GetOptionParam("TableType", "Type", tableTypeStr)) {
             if (tableTypeStr == "CLR")
-                tableType = ParseTable::TableType::CLR;
+                tableType = ParseTableType::CLR;
             else if (tableTypeStr == "LALR")
-                tableType = ParseTable::TableType::LALR;
+                tableType = ParseTableType::LALR;
             else if (tableTypeStr == "LR")
-                tableType = ParseTable::TableType::LR;
+                tableType = ParseTableType::LR;
         } 
 
         if (!parseData.MakeParseTable(parseTable, tableType)) {
@@ -750,7 +789,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         const auto&      canonicalItems = parseData.GetGrammar().GetDebugData().CanonicalItems;
 
         // Set filename to default if empty
-        GetOptionParam("Canonical", "Filename", &filename);
+        GetOptionParam("Canonical", "Filename", filename);
 
         // Dumb the canonical set to the file
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
@@ -777,7 +816,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         String           filename  = "ConflictReport.txt";
 
         // Get the filename from command line if it exists
-        GetOptionParam("ConflictReport", "Filename", &filename);
+        GetOptionParam("ConflictReport", "Filename", filename);
 
         // Dumb the canonical set to the file
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
@@ -805,25 +844,29 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         String prefix        = useEnumClasses ? "" : "PE_";
 
         // Get the data from the command line
-        GetOptionParam("ReduceFunc", "Filename", &filename);
-        GetOptionParam("ReduceFunc", "Classname", &classname);
-        GetOptionParam("ReduceFunc", "Stackname", &stackname);
-        GetOptionParam("ReduceFunc", "Prefix", &prefix);
+        GetOptionParam("ReduceFunc", "Filename", filename);
+        GetOptionParam("ReduceFunc", "Classname", classname);
+        GetOptionParam("ReduceFunc", "Stackname", stackname);
+        GetOptionParam("ReduceFunc", "Prefix", prefix);
 
         // If production enumaration should be created and 'enum class' should be used,
         // then get an option param for defining enum class name from 'ProdEnum' option
         // Find a more subtle solution
         if ((CheckOption("ProdEnum") || writeEnums) && useEnumClasses)
-            GetOptionParam("ProdEnum", "Classname", &enumclassname);
+            GetOptionParam("ProdEnum", "Classname", enumclassname);
 
-        GrammarOutputC grammarOut{&parseData.GetGrammar(), useEnumClasses, createEnumStrings};
+        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName,
+                                  useEnumClasses, createEnumStrings};
 
         // Create the production switch
         grammarOut.CreateProductionSwitch(prodSwitch, classname, stackname, prefix, enumclassname);
 
-        // Open the file and dump the String
+        // Open the file
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
             TextOutputStream tstream{file};
+            // Dump the pseudo-copyright header
+            tstream.WriteText(copyrightHeader);
+            // Dump the string
             tstream.WriteText(prodSwitch);
 
             output.Add("Wrote the reduce function to '" + filename + "'");
@@ -847,29 +890,39 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         auto   fflags    = FileOutputStream::Mode::Truncate;
 
         // Set the default value
-        if (!GetOptionParam("ProdEnum", "Filename", &filename) && !enumFilename.empty()) {
+        if (!GetOptionParam("ProdEnum", "Filename", filename) && !enumFilename.empty()) {
             fflags   = fileFlags;
             filename = enumFilename;
         }
-        GetOptionParam("ProdEnum", "Classname", &classname);
-        GetOptionParam("ProdEnum", "Prefix", &prefix);
+        GetOptionParam("ProdEnum", "Classname", classname);
+        GetOptionParam("ProdEnum", "Prefix", prefix);
 
-        GrammarOutputC grammarOut{&parseData.GetGrammar(), useEnumClasses, createEnumStrings};
+        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName,
+                                  useEnumClasses, createEnumStrings};
 
         // Create the production switch
         grammarOut.CreateProductionEnum(prodEnum, classname, prefix);
 
-        // Open the file and dump the string
+        // Open the file
         if (file.Open(filename, fflags)) {
             TextOutputStream tstream{file};
+
+            // If it is the beginning of the generated file...
+            if (fflags == FileOutputStream::Mode::Truncate) {
+                // ...dump the pseudo-copyright header
+                tstream.WriteText(copyrightHeader);
+            } else {
+                // Otherwise, add two empty lines for indentation
+                tstream.WriteText("\n\n");
+            }
+
+            // Dump the string
             tstream.WriteText(prodEnum);
 
             output.Add("Wrote the production enumeration to '" + filename + "'");
 
-            if (filename == enumFilename) {
-                tstream.WriteText("\n\n");
+            if (filename == enumFilename)
                 fileFlags = FileOutputStream::Mode::Append;
-            }
         } else {
             // ERROR: Opening file
             if (pmessages->GetMessageFlags() & ParseMessageBuffer::MessageError) {
@@ -890,28 +943,38 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         auto   fflags    = FileOutputStream::Mode::Truncate;
 
         // Set the default value
-        if (!GetOptionParam("TermEnum", "Filename", &filename) && !enumFilename.empty()) {
+        if (!GetOptionParam("TermEnum", "Filename", filename) && !enumFilename.empty()) {
             fflags   = fileFlags;
             filename = enumFilename;
         }
-        GetOptionParam("TermEnum", "Classname", &classname);
-        GetOptionParam("TermEnum", "Prefix", &prefix);
+        GetOptionParam("TermEnum", "Classname", classname);
+        GetOptionParam("TermEnum", "Prefix", prefix);
 
         // Create the terminal enumeration
-        GrammarOutputC grammarOut{&parseData.GetGrammar(), useEnumClasses, createEnumStrings};
+        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName, 
+                                  useEnumClasses, createEnumStrings};
         grammarOut.CreateTerminalEnum(termEnum, parseData.GetLex(), classname, prefix);
 
-        // Open the file and dump the string
+        // Open the file
         if (file.Open(filename, fflags)) {
             TextOutputStream tstream{file};
+
+            // If it is the beginning of the generated file...
+            if (fflags == FileOutputStream::Mode::Truncate) {
+                // ...dump the pseudo-copyright header
+                tstream.WriteText(copyrightHeader);
+            } else {
+                // Otherwise, add two empty lines for indentation
+                tstream.WriteText("\n\n");
+            }
+
+            // Dump the string
             tstream.WriteText(termEnum);
 
             output.Add("Wrote the terminal enumeration to '" + filename + "'");
 
-            if (filename == enumFilename) {
-                tstream.WriteText("\n\n");
+            if (filename == enumFilename)
                 fileFlags = FileOutputStream::Mode::Append;
-            }
         } else {
             // ERROR: Opening file
             if (pmessages->GetMessageFlags() & ParseMessageBuffer::MessageError) {
@@ -932,28 +995,38 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         auto   fflags    = FileOutputStream::Mode::Truncate;
 
         // Set the default value
-        if (!GetOptionParam("NonTermEnum", "Filename", &filename) && !enumFilename.empty()) {
+        if (!GetOptionParam("NonTermEnum", "Filename", filename) && !enumFilename.empty()) {
             fflags   = fileFlags;
             filename = enumFilename;
         }
-        GetOptionParam("NonTermEnum", "Classname", &classname);
-        GetOptionParam("NonTermEnum", "Prefix", &prefix);
+        GetOptionParam("NonTermEnum", "Classname", classname);
+        GetOptionParam("NonTermEnum", "Prefix", prefix);
 
         // Create the non terminal enumeration
-        GrammarOutputC grammarOut{&parseData.GetGrammar(), useEnumClasses, createEnumStrings};
+        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName,
+                                  useEnumClasses, createEnumStrings};
         grammarOut.CreateNonterminalEnum(nontermEnum, classname, prefix);
 
-        // Open the file and dump the string
+        // Open the file
         if (file.Open(filename, fflags)) {
             TextOutputStream tstream{file};
+
+            // If it is the beginning of the generated file...
+            if (fflags == FileOutputStream::Mode::Truncate) {
+                // ...dump the pseudo-copyright header
+                tstream.WriteText(copyrightHeader);
+            } else {
+                // Otherwise, add two empty lines for indentation
+                tstream.WriteText("\n\n");
+            }
+
+            // Dump the string
             tstream.WriteText(nontermEnum);
 
             output.Add("Wrote the nonterminal enumeration to '" + filename + "'");
 
-            if (filename == enumFilename) {
-                tstream.WriteText("\n\n");
+            if (filename == enumFilename)
                 fileFlags = FileOutputStream::Mode::Append;
-            }
         } else {
             // ERROR: Opening file
             if (pmessages->GetMessageFlags() & ParseMessageBuffer::MessageError) {
@@ -969,18 +1042,21 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         FileOutputStream file;
         String staticDFA;
         String filename  = "StaticDFA.h";
-        String classname = "StaticDFA";
+        String classname = "StaticDFAData";
 
         // Set the default value
-        GetOptionParam("StaticDFA", "Filename", &filename);
-        GetOptionParam("StaticDFA", "Classname", &classname);
+        GetOptionParam("StaticDFA", "Filename", filename);
+        GetOptionParam("StaticDFA", "Classname", classname);
 
         // Create the production switch
-        dfa.CreateStaticDFA(staticDFA, classname);
+        dfa.CreateStaticDFA(staticDFA, classname, namespaceName);
 
-        // Open the file and dump the string
+        // Open the file
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
             TextOutputStream tstream{file};
+            // Dump the pseudo-copyright header
+            tstream.WriteText(copyrightHeader);
+            // Dump the string
             tstream.WriteText(staticDFA);
 
             output.Add("Wrote the static DFA structure to '" + filename + "'");
@@ -999,18 +1075,21 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         FileOutputStream file;
         String staticParseTable;
         String filename  = "StaticParseTable.h";
-        String classname = "StaticParseTable";
+        String classname = "StaticParseTableData";
 
         // Set the default value
-        GetOptionParam("StaticParseTable", "Filename", &filename);
-        GetOptionParam("StaticParseTable", "Classname", &classname);
+        GetOptionParam("StaticParseTable", "Filename", filename);
+        GetOptionParam("StaticParseTable", "Classname", classname);
 
         // Create the production switch
-        parseTable.CreateStaticParseTable(staticParseTable, classname);
+        parseTable.CreateStaticParseTable(staticParseTable, classname, namespaceName);
 
-        // Open the file and dump the string
+        // Open the file
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
             TextOutputStream tstream{file};
+            // Dump the pseudo-copyright header
+            tstream.WriteText(copyrightHeader);
+            // Dump the string
             tstream.WriteText(staticParseTable);
 
             output.Add("Wrote the StaticParseTable structure to '" + filename + "'");
@@ -1033,13 +1112,13 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
 
         // Store all parsing errors in one common buffer
         String strdata;
-        if (GetOptionParam("ParseData", "StringData", &strdata)) {
+        if (GetOptionParam("ParseData", "StringData", strdata)) {
             // Setup the expression input stream
             stringStream.SetInputString(strdata);
             pparseDataInput = &stringStream;
         } else {
             String filename = "ParseData.txt";
-            GetOptionParam("ParseData", "Filename", &filename);
+            GetOptionParam("ParseData", "Filename", filename);
 
             if (!file.Open(filename)) {
                 // ERROR: Opening file
@@ -1093,8 +1172,8 @@ finished_executing :
     const size_t noteCount    = pmessages->GetMessageCount(ParseMessageBuffer::MessageNote);
 
     // Get the error data
-    vector<String> msgStrings;
-    String         buffer;
+    std::vector<String> msgStrings;
+    String              buffer;
 
     // If there are any messages from loading the grammar write them
     pmessages->PrintMessages(msgStrings);
@@ -1117,7 +1196,7 @@ output_results:
         FileOutputStream file;
         String           filename = "ParserOutput.txt";
 
-        GetOptionParam("QuietMode", "Filename", &filename);
+        GetOptionParam("QuietMode", "Filename", filename);
 
         // Open the file and dump the string
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
@@ -1127,3 +1206,7 @@ output_results:
         }
     }
 }
+
+} // namespace Yacc
+} // namespace Generator
+} // namespace SGParser

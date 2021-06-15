@@ -10,8 +10,10 @@
 #include <set>
 #include <vector>
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Nondeterministic Finite Automaton (NFA) declaration
 

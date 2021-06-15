@@ -5,8 +5,10 @@
 #include "Production.h"
 #include "Tokenizer.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser
+{
+namespace Generator
+{
 
 // *** Production Class implementation
 
@@ -299,3 +301,6 @@ size_t ParseTableProduction::FindVectorInSetOfSets(const std::vector<ParseTableP
     // It's not in
     return size_t(-1);
 }
+
+} // namespace Generator
+} // namespace SGParser

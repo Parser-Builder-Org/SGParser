@@ -1,4 +1,10 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
 //////////////////////////// TermEnum ////////////////////////////
+
+namespace XC
+{
 
 enum class TermEnum
 {
@@ -33,3 +39,5 @@ constexpr char const* const StringifyEnumTermEnum[] =
     /*11*/ "Identifier",
     /*12*/ "EndOfLine"
 };
+
+} // namespace XC

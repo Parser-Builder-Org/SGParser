@@ -1,3 +1,9 @@
+// This is a generated file.
+// Copyright is in `CmdLineParser.gr` - see that file for details.
+
+namespace XC
+{
+
 bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
 {
     switch (static_cast<ProductionEnum>(productionID))
@@ -60,6 +66,18 @@ bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
 
         // ParseDataParam -> '+display' 
         case ProductionEnum::ParseDataDisplayParam:
+            break;
+
+        // Option -> '-namespaces' NamespaceParam 
+        case ProductionEnum::NamespaceOption:
+            break;
+
+        // NamespaceParam -> '+nsname' ':' ClassName 
+        case ProductionEnum::NamespaceClassNameParam:
+            break;
+
+        // NamespaceParam -> <empty>
+        case ProductionEnum::NamespaceClassNameParamEmpty:
             break;
 
         // Option -> '-enumfile' EnumFileParam 
@@ -339,5 +357,7 @@ bool ParseHandler::Reduce(Parse<StackElement> &parse, unsigned productionID)
             break;
 
     }
-    return 1u;
+    return true;
 }
+
+} // namespace XC

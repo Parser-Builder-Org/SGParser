@@ -11,7 +11,8 @@
 
 #include <vector>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Deterministic Finite Automaton (DFA)
 

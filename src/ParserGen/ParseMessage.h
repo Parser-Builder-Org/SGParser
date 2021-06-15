@@ -9,8 +9,10 @@
 
 #include <vector>
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Parse Massage
 
@@ -70,21 +72,21 @@ struct ParseMessage final
     // Offset number (NoValue for none)
     size_t   Offset   = NoValue;
     // File name
-    String   FileName = "";
+    String   FileName = String{};
 
     // Constructors
     ParseMessage() = default;
 
-    ParseMessage(Type type, const String& name, const String& message, unsigned id = 0u,
-                 size_t line = NoValue, size_t offset = NoValue, const String& fileName = "",
-                 unsigned flags = 0u) {
+    ParseMessage(Type type, const String& name, const String& message,
+                 unsigned id = 0u, size_t line = NoValue, size_t offset = NoValue,
+                 const String& fileName = String{}, unsigned flags = 0u) {
         SetParseMessage(type, name, message, id, line, offset, fileName, flags);
     }
 
     // Initializer
-    void SetParseMessage(Type type, const String& name, const String& message, unsigned id = 0u,
-                         size_t line = NoValue, size_t offset = NoValue,
-                         const String& fileName = "", unsigned flags = 0u) {
+    void SetParseMessage(Type type, const String& name, const String& message,
+                         unsigned id = 0u, size_t line = NoValue, size_t offset = NoValue,
+                         const String& fileName = String{}, unsigned flags = 0u) {
         Flags    = type | (flags & ~TypeMask);
         Name     = name;
         Message  = message;

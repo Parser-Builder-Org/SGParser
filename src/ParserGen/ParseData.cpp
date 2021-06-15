@@ -7,8 +7,10 @@
 #include "StdGrammarLexemeEnum.h"
 #include "StdGrammarProdEnum.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser
+{
+namespace Generator
+{
 
 // *** ParseData
 
@@ -546,10 +548,6 @@ struct StdGrammarStackElement : ParseStackElement<StdGrammarToken>
 };
 
 
-template class SGParser::Parse<StdGrammarStackElement>;
-
-namespace SGParser::Generator {
-
 class StdGrammarParseHandler final : public ParseHandler<StdGrammarStackElement>
 {
 public:
@@ -607,8 +605,6 @@ public:
     // Main parsing reduce function
     bool Reduce(Parse<StdGrammarStackElement>& parse, unsigned productionID) override;
 };
-
-} // namespace SGParser::Generator
 
 
 // Expand right hand side productions
@@ -1940,7 +1936,7 @@ bool StdGrammarParseData::BuildParser(InputStream* pinitStr) {
                                                       Messages.GetMessageFlags());
         sgGrammar.GetDebugData().Flags |= GrammarDebugData::Canonical;
 
-        if (!StdGrammarParseTable.Create(sgGrammar, ParseTable::TableType::CLR))
+        if (!StdGrammarParseTable.Create(sgGrammar, ParseTableType::CLR))
             return false;
     }
 
@@ -2341,6 +2337,9 @@ bool StdGrammarParseData::MakeDFA(DFAGen& dfa) {
 
 // Return the parse table
 bool StdGrammarParseData::MakeParseTable(ParseTableGen& parseTable,
-                                         ParseTable::TableType tableType) {
+                                         ParseTableType tableType) {
     return parseTable.Create(UserGrammar, tableType);
 }
+
+} // namespace Generator
+} // namespace SGParser

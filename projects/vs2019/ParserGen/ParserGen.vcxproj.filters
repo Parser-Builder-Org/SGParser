@@ -50,6 +50,12 @@
     <ClInclude Include="..\..\..\src\ParserGen\Lexeme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\ParserGen\FileInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ParserGen\FileOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\ParserGen\DFAGen.cpp">

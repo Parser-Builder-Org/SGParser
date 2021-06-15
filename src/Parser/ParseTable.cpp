@@ -4,7 +4,8 @@
 
 #include "ParseTable.h"
 
-using namespace SGParser;
+namespace SGParser 
+{
 
 // ***** Parse Table class implementation
 
@@ -91,7 +92,7 @@ void ParseTable::Destroy() noexcept {
     NonTerminals.clear();
     StateInfos.clear();
     ProductionErrorTerminals.clear();
-    Type         = TableType::None;
+    Type         = ParseTableType::None;
     InitialState = InvalidState;
 }
 
@@ -112,3 +113,5 @@ void ParseTable::FreeTables() noexcept {
     GotoWidth    = 0u;
     StaticFlag   = false;
 }
+
+} // namespace SGParser

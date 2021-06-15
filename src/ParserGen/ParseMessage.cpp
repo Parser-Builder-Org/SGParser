@@ -4,8 +4,10 @@
 
 #include "ParseMessage.h"
 
-using namespace SGParser;
-using namespace Generator;
+namespace SGParser
+{
+namespace Generator
+{
 
 // *** Message Buffer functions
 
@@ -94,15 +96,13 @@ void ParseMessageBuffer::PrintMessage(String& msgStr, const ParseMessage& source
     }
 
     if (displayFlags & ParseMessage::DisplayLine && source.Line != ParseMessage::NoValue) {
-        msg += line ? ", " : "(";
+        msg += (line ? ", " : "(") + StringWithFormat("Ln:%zu", source.Line + 1u);
         line = true;
-        msg += StringWithFormat("Ln:%zu", source.Line + 1u);
     }
     // same goes for the offset
-    if (displayFlags & ParseMessage::DisplayOffset && source.Offset != ParseMessage::NoValue) {
-        msg += line ? ", " : "(";
-        msg += StringWithFormat("Col:%zu) ", source.Offset + 1u);
-    } else if (line)
+    if (displayFlags & ParseMessage::DisplayOffset && source.Offset != ParseMessage::NoValue)
+        msg += (line ? ", " : "(") + StringWithFormat("Col:%zu) ", source.Offset + 1u);
+    else if (line)
         msg += ") ";
 
     if (displayFlags & ParseMessage::DisplayMessage)
@@ -157,3 +157,6 @@ size_t ParseMessageBuffer::GetMessageCount(unsigned flags) const noexcept {
 
     return count;
 }
+
+} // namespace Generator
+} // namespace SGParser

@@ -2,7 +2,7 @@
 // Content:   Calculator sample main file
 // Provided AS IS under MIT License; see LICENSE file in root folder.
 
-#include "CalcParser.hpp"
+#include "CalcParser.h"
 
 #include <iostream>
 #include <iterator>

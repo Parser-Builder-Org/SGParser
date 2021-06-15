@@ -12,7 +12,8 @@
 #include <algorithm>
 #include <type_traits>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Input stream
 

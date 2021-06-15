@@ -11,12 +11,13 @@
 
 #include <vector>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** DFA-Based tokenizer used for general parsing
 
 template <class Token>
-class DFATokenizer final : public TokenizerImpl<Token> 
+class DFATokenizer : public TokenizerImpl<Token> 
 {
 public:
     // Default constructor
@@ -140,6 +141,8 @@ Token& DFATokenizer<Token>::GetNextToken(Token& token) {
                 SetTailPos(startHead);
                 TailPos = HeadPos;
                 code    = TokenCode::TokenError;
+                if (!charReader.IsEOF())
+                    charReader.Advance();
             }
             token.CopyFromTokenizer(code, *this);
             return token;

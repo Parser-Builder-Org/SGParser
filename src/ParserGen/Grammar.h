@@ -14,8 +14,10 @@
 #include <set>
 #include <vector>
 
-namespace SGParser {
-namespace Generator {
+namespace SGParser
+{
+namespace Generator
+{
 
 // ***** Grammar representation
 
@@ -180,7 +182,7 @@ public:
     // *** Table construction
 
     // Return true for success (no errors), false otherwise
-    bool   MakeParseTable(ParseTableGen& table, ParseTable::TableType type);
+    bool   MakeParseTable(ParseTableGen& table, ParseTableType type);
 
     // Checks productions, returns true for no errors
     // If productions have no errors, its ok to generate parse table
@@ -285,21 +287,22 @@ public:
     // Produces an enumeration of production names (for reduce keywords)
     // Returns number of elements
     virtual size_t CreateProductionEnum(String& str, const String& name,
-                                        const String& prefix = "") const                     = 0;
+                                        const String& prefix = String{}) const               = 0;
     // Creates a Reduce function and switch statement with cases for all enumerations
     // Returns number of elements
     virtual size_t CreateProductionSwitch(String& str, const String& className,
-                                          const String& stackName, const String& prefix = "",
-                                          const String& enumClassName = "") const            = 0;
+                                          const String& stackName,
+                                          const String& prefix = String{},
+                                          const String& enumClassName = String{}) const      = 0;
 
     // Produces an enumeration of nonterminals
     // Returns number of elements
     virtual size_t CreateNonterminalEnum(String& str, const String& name,
-                                         const String& prefix = "") const                    = 0;
+                                         const String& prefix = String{}) const              = 0;
     // Creates a enumeration of terminals
     // Returns number of elements
     virtual size_t CreateTerminalEnum(String& str, const Lex& lex, const String& name,
-                                      const String& prefix = "") const                       = 0;
+                                      const String& prefix = String{}) const                 = 0;
 
 protected:
     Grammar* pGrammar;
@@ -310,8 +313,10 @@ protected:
 class GrammarOutputC final : public GrammarOutput 
 {
 public:
-    GrammarOutputC(Grammar* pgrammar = nullptr, bool enumClasses = false, bool enumStrings = false)
+    GrammarOutputC(Grammar* pgrammar = nullptr, const String& namespaceName = String{},
+                   bool enumClasses = false, bool enumStrings = false)
         : GrammarOutput{pgrammar},
+          namespaceName{namespaceName},
           useEnumClasses{enumClasses},
           createEnumStrings{enumStrings}
     {}
@@ -321,23 +326,26 @@ public:
     // Produces an enumeration of production names (for reduce keywords)
     // Returns number of elements
     size_t CreateProductionEnum(String& str, const String& name,
-                                const String& prefix = "") const override;
+                                const String& prefix = String{}) const override;
     // Creates a Reduce function and switch statement with cases for all enumerations
     // Returns number of elements
     size_t CreateProductionSwitch(String& str, const String& className, const String& stackName,
-                                  const String& prefix= "",
-                                  const String& enumClassName = "") const override;
+                                  const String& prefix = String{},
+                                  const String& enumClassName = String{}) const override;
 
     // Produces an enumeration of nonterminals
     // Returns number of elements
     size_t CreateNonterminalEnum(String& str, const String& name,
-                                 const String& prefix = "") const override;
+                                 const String& prefix = String{}) const override;
     // Creates an enumeration of terminals
     // Returns number of elements
     size_t CreateTerminalEnum(String& str, const Lex& lex, const String& name,
-                              const String& prefix = "") const override;
+                              const String& prefix = String{}) const override;
 
 private:
+    // If not empty then the generated code will be enclosed in 'namespaceName' namespace
+    const String namespaceName;
+
     // If true then use 'enum class' instead of 'enum'
     const bool useEnumClasses;
 

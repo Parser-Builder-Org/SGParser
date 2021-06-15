@@ -1,4 +1,11 @@
-static uint16_t StaticParseTable_ActionTable[28][13] =
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
+#include "ParseTableType.h"
+
+#include <cstdint>
+
+static uint16_t StaticParseTableData_ActionTable[28][13] =
 {
     {0x0000, 0x0000, 0x8008, 0x0000, 0x8002, 0x0000, 0x0000, 0x0000, 0x0000, 0x8001, 0x0000, 0x8007, 0x8005},
     {0x0000, 0x0000, 0x8008, 0x0000, 0x8002, 0x0000, 0x0000, 0x0000, 0x0000, 0x8001, 0x0000, 0x800B, 0x0000},
@@ -30,7 +37,7 @@ static uint16_t StaticParseTable_ActionTable[28][13] =
     {0x0000, 0x400F, 0x400F, 0x800E, 0x800F, 0x800D, 0x8010, 0x8011, 0x0000, 0x400F, 0x0000, 0x400F, 0x400F}
 };
 
-static uint16_t StaticParseTable_GotoTable[28][4] =
+static uint16_t StaticParseTableData_GotoTable[28][4] =
 {
     {0x0009, 0x0004, 0x0006, 0x0003},
     {0xFFFF, 0xFFFF, 0x000A, 0xFFFF},
@@ -62,47 +69,47 @@ static uint16_t StaticParseTable_GotoTable[28][4] =
     {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF}
 };
 
-static uint32_t StaticParseTable_ReduceProduction[17][4] =
+static uint32_t StaticParseTableData_ReduceProduction[17][4] =
 {
     {1, 0, 0, 0}, {2, 0, 0, 0}, {1, 0, 0, 0}, {1, 1, 0, 0}, {1, 1, 0, 0}, {1, 1, 0, 0}, {1, 2, 0, 0}, {1, 2, 0, 0}, {2, 2, 0, 0}, {3, 2, 0, 0},
     {3, 2, 0, 0}, {3, 2, 0, 0}, {3, 2, 0, 0}, {3, 2, 0, 0}, {3, 2, 0, 0}, {3, 3, 0, 0}, {3, 3, 0, 0}
 };
 
-static uint16_t StaticParseTable_Nonterminals[4] =
+static uint16_t StaticParseTableData_Nonterminals[4] =
 {
     0x0000, 0xFFFF, 0xFFFF, 0xFFFF
 };
 
-static uint8_t StaticParseTable_Terminals[13] =
+static uint8_t StaticParseTableData_Terminals[13] =
 {
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0
 };
 
-static uint8_t StaticParseTable_StateInfos[28][2] =
+static uint8_t StaticParseTableData_StateInfos[28][2] =
 {
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
     {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}
 };
 
-static StaticParseTable StaticParseTable =
+static SGParser::StaticParseTable StaticParseTableData =
 {
-    ParseTable::TableType::CLR,
-    28,
-    13,
-    StaticParseTable_ActionTable[0u],
-    28,
-    4,
-    StaticParseTable_GotoTable[0u],
-    17,
-    StaticParseTable_ReduceProduction[0u],
-    4,
-    StaticParseTable_Nonterminals,
-    13,
-    StaticParseTable_Terminals,
-    28,
-    StaticParseTable_StateInfos[0u],
-    0,
+    SGParser::ParseTableType::CLR,
+    28u,
+    13u,
+    StaticParseTableData_ActionTable[0u],
+    28u,
+    4u,
+    StaticParseTableData_GotoTable[0u],
+    17u,
+    StaticParseTableData_ReduceProduction[0u],
+    4u,
+    StaticParseTableData_Nonterminals,
+    13u,
+    StaticParseTableData_Terminals,
+    28u,
+    StaticParseTableData_StateInfos[0u],
+    0u,
     nullptr
 };

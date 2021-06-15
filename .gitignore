@@ -12,10 +12,9 @@
 .vs/
 .vscode/
 # Ignore build directories
-SGParser/build/
-XCompiler/build/
+/build/
 # Ignore test output
-SGParser/tests/smoke/*/Output/
+tests/smoke/*/Output/
 # Ignore JetBrains files
 .idea
 #ignore CMake build artefacts

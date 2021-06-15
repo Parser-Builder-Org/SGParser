@@ -6,12 +6,14 @@
 #define INC_SGPARSER_PARSETABLE_H
 
 #include "SGString.h"
+#include "ParseTableType.h"
 
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** ParseTable class
 
@@ -20,20 +22,6 @@ namespace SGParser {
 class ParseTable
 {
 public:
-    // Types of parse tables supported
-    enum class TableType 
-    {
-        // Set initially, no table
-        None,
-        // LR(1) parsing table
-        LR,
-        // LALR(1) parsing table
-        LALR,
-        // Compacted LR(1) parsing table (very similar to LALR,
-        // but won't generate erroneous reduce-reduce conflicts)
-        CLR
-    };
-
     // Action mask should be applied by the parser on a value
     // returned by GetAction in order to determine what to do next
     enum ActionMask : unsigned
@@ -118,7 +106,7 @@ public:
     void Destroy() noexcept;
 
     // Return true if parse table is usable
-    bool IsValid() const noexcept { return Type != TableType::None; }
+    bool IsValid() const noexcept { return Type != ParseTableType::None; }
 
     // ***** Parser Interface
 
@@ -129,7 +117,7 @@ public:
     // Have to apply ActionMasks to figure out what to do
     unsigned GetAction(unsigned state, unsigned terminal) const {
         SG_ASSERT(state < ActionTable.size() && terminal < ActionWidth);
-        return unsigned(ActionTable[state][terminal]);
+        return unsigned(int16_t(ActionTable[state][terminal]));
     }
 
     // Information
@@ -145,12 +133,12 @@ public:
         SG_ASSERT(state < GotoTable.size() &&
                   action < ReduceProductions.size() &&
                   ReduceProductions[action].Left < GotoWidth);
-        return unsigned(GotoTable[state][ReduceProductions[action].Left]);
+        return unsigned(int16_t(GotoTable[state][ReduceProductions[action].Left]));
     }
     
     unsigned GetLeftReduceState(unsigned state, unsigned left) const {
         SG_ASSERT(state < GotoTable.size() && left < GotoWidth);
-        return unsigned(GotoTable[state][left]);
+        return unsigned(int16_t(GotoTable[state][left]));
     }
 
     // Get number of symbols to pop off stack on reduce by certain action
@@ -181,7 +169,7 @@ public:
 
 protected:
     // Type of table (LR, LALR, CLR)
-    TableType Type         = TableType::None;
+    ParseTableType Type    = ParseTableType::None;
     // State to start parsing with
     unsigned  InitialState = InvalidState;
 
@@ -215,7 +203,7 @@ protected:
 struct StaticParseTable final
 {
     // Parse table type
-    ParseTable::TableType Type;
+    ParseTableType Type;
     // Action table data
     size_t    ActionHeight;
     size_t    ActionWidth;

@@ -9,7 +9,8 @@
 
 #include <map>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Backtracking token stream
 

@@ -24,15 +24,15 @@ This will build binaries into the following directories correspondingly\
 `build\x64\samples\Release\`
 
 ```bat
-build --config debug --arch win32
-build --config release --arch win32
+build --config debug --arch x86
+build --config release --arch x86
 ```
 
 This will build binaries into the following directories correspondingly\
 `build\x86\samples\Debug\`\
 `build\x86\samples\Release\`
 
-The platform option can be omitted. Then it will build for the x64 platform by default.
+The platform option can be omitted. Then it will build for the x86 platform by default.
 ```bat
 build --config debug
 build --config release
@@ -42,7 +42,7 @@ It is possible to omit the configuration option too.
 ```bat
 build
 ```
-Then it will build a debug version of binaries for x64 platform.
+Then it will build a debug version of binaries for x86 platform.
 
 #### On Linux and macOS
 

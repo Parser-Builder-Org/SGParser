@@ -1,15 +1,16 @@
-// Filename:  StdStreamAdapter.hpp
+// Filename:  StdStreamAdapter.h
 // Content:   Standard stream adapter definition
 // Provided AS IS under MIT License; see LICENSE file in root folder.
 
-#ifndef INC_SGPARSER_SAMPLE_CALC_STDSTREAM_ADAPTER_HPP
-#define INC_SGPARSER_SAMPLE_CALC_STDSTREAM_ADAPTER_HPP
+#ifndef INC_SGPARSER_SAMPLE_CALC_STD_STREAM_ADAPTER_H
+#define INC_SGPARSER_SAMPLE_CALC_STD_STREAM_ADAPTER_H
 
 #include "SGStream.h"
 
 #include <istream>
 
-namespace Calc {
+namespace Calc 
+{
 
 using namespace SGParser;
 
@@ -33,4 +34,4 @@ private:
 
 } // namespace Calc
 
-#endif // INC_SGPARSER_SAMPLE_CALC_STDSTREAM_ADAPTER_HPP
+#endif // INC_SGPARSER_SAMPLE_CALC_STD_STREAM_ADAPTER_H

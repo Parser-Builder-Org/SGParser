@@ -10,7 +10,8 @@
 #include <map>
 #include <vector>
 
-namespace SGParser {
+namespace SGParser
+{
 
 // ***** Token and TokenStream
 

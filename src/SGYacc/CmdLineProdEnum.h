@@ -24,6 +24,10 @@ enum CmdLineProdEnum
     CL_ParseDataStringParam,
     CL_ParseDataDisplayParam,
 
+    CL_NamespaceOption,
+    CL_NamespaceClassNameParam,
+    CL_NamespaceClassNameParamEmpty,
+
     CL_EnumFileOption,
     CL_EnumFileFileNameParam,
     CL_EnumFileFileNameParamEmpty,

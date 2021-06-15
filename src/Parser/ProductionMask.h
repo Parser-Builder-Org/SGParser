@@ -5,9 +5,10 @@
 #ifndef INC_SGPARSER_PRODUCTIONMASK_H
 #define INC_SGPARSER_PRODUCTIONMASK_H
 
-namespace SGParser {
-
-namespace ProductionMask {
+namespace SGParser
+{
+namespace ProductionMask
+{
 
 // Values in productions are nonterminals, unless the TerminalMask is set
 static constexpr unsigned Terminal             = 0x8000'0000;
@@ -21,7 +22,6 @@ static constexpr unsigned TerminalValue        = 0x0FFF'FFFF;
 static constexpr unsigned AcceptingNonTerminal = 0x1000'0000;
 
 } // namespace ProductionMask
-
 } // namespace SGParser
 
 #endif // INC_SGPARSER_PRODUCTIONMASK_H

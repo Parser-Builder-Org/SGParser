@@ -1,3 +1,6 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
 //////////////////////////// ProductionEnum ////////////////////////////
 
 enum ProductionEnum

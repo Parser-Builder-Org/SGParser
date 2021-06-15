@@ -1,4 +1,10 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
 //////////////////////////// ProductionEnum ////////////////////////////
+
+namespace XC
+{
 
 enum class ProductionEnum
 {
@@ -41,3 +47,5 @@ constexpr char const* const StringifyEnumProductionEnum[] =
     /*15*/ "Assignment",
     /*16*/ "Replication"
 };
+
+} // namespace XC

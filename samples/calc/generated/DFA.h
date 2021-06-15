@@ -1,3 +1,13 @@
+// This is a generated file.
+// Copyright is in `Calc.gr` - see that file for details.
+
+#include "ParseTableType.h"
+
+#include <cstdint>
+
+namespace Calc
+{
+
 static uint16_t CalcDFA_TransitionTable[18][77] =
 {
     {0xFFFF, 0x0001, 0x0002, 0x0001, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000A, 0x000B, 0xFFFF, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000D, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C, 0x000C},
@@ -26,22 +36,22 @@ static uint16_t CalcDFA_AcceptStates[18] =
     0x0002, 0x0000, 0x000B, 0x0007, 0x0002, 0x0008, 0x000B, 0x000B
 };
 
-static LexemeInfo CalcDFA_LexemeInfos[14] =
+static SGParser::LexemeInfo CalcDFA_LexemeInfos[14] =
 {
-    {0, LexemeInfo::ActionNone},
-    {1, LexemeInfo::ActionNone},
-    {2, LexemeInfo::ActionNone},
-    {3, LexemeInfo::ActionNone},
-    {4, LexemeInfo::ActionNone},
-    {5, LexemeInfo::ActionNone},
-    {6, LexemeInfo::ActionNone},
-    {7, LexemeInfo::ActionNone},
-    {8, LexemeInfo::ActionNone},
-    {9, LexemeInfo::ActionNone},
-    {10, LexemeInfo::ActionNone},
-    {11, LexemeInfo::ActionNone},
-    {0, LexemeInfo::ActionNone},
-    {12, LexemeInfo::ActionNone}
+    {0, SGParser::LexemeInfo::ActionNone},
+    {1, SGParser::LexemeInfo::ActionNone},
+    {2, SGParser::LexemeInfo::ActionNone},
+    {3, SGParser::LexemeInfo::ActionNone},
+    {4, SGParser::LexemeInfo::ActionNone},
+    {5, SGParser::LexemeInfo::ActionNone},
+    {6, SGParser::LexemeInfo::ActionNone},
+    {7, SGParser::LexemeInfo::ActionNone},
+    {8, SGParser::LexemeInfo::ActionNone},
+    {9, SGParser::LexemeInfo::ActionNone},
+    {10, SGParser::LexemeInfo::ActionNone},
+    {11, SGParser::LexemeInfo::ActionNone},
+    {0, SGParser::LexemeInfo::ActionNone},
+    {12, SGParser::LexemeInfo::ActionNone}
 };
 
 static uint16_t CalcDFA_ExpressionStartStates[1] =
@@ -130,15 +140,18 @@ static uint8_t CalcDFA_CharTable[77][2] =
     {122, 76}
 };
 
-static StaticDFA CalcDFA =
+static SGParser::StaticDFA CalcDFA =
 {
-    77, 18,
+    77u,
+    18u,
     CalcDFA_TransitionTable[0u],
     CalcDFA_AcceptStates,
-    77,
+    77u,
     CalcDFA_CharTable[0u],
-    14,
+    14u,
     CalcDFA_LexemeInfos,
-    1,
+    1u,
     CalcDFA_ExpressionStartStates
 };
+
+} // namespace Calc

@@ -7,9 +7,12 @@
 
 #include "SGString.h"
 
-namespace SGParser {
-namespace Generator {
-namespace Yacc {
+namespace SGParser
+{
+namespace Generator
+{
+namespace Yacc
+{
 
 inline String const cmdLineGrammar = R"~grammar(
 //-------------------------------------------------------------------------------
@@ -38,7 +41,7 @@ inline String const cmdLineGrammar = R"~grammar(
 '{pr_prefix}{char}+'                                        parameter,          'param';                    // Parameter
 '{digit}*'                                                  integer,            'integer';                  // Integer value
 '({value}|(_)|(\.\./)|(/)|(\.))+'                           fileName,           'fileName';                 // Standard filename w/ path
-'({char}|\_)+({value}|\_|(\:\:))*'                          className,          'className';                // C++ Classname
+'({char}|\_)+({value}|\_|(\:\:))*'                          className,          'className';                // C++ classname or namespace name
 
 '{char}{char}{value}{value}{value}{value}{char}'            msgCode,            'msg';                      // Message code (YC0001E)
 
@@ -56,6 +59,7 @@ inline String const cmdLineGrammar = R"~grammar(
 '\-[cC][lL][rR]'                                            opTableTypeCLR,     '-clr';
 
 '\-([pP]|([pP][aA][rR][sS][eE]))'                           opParseData,        '-parse';                   // Parse a test data string/file
+'\-[nN][aA][mM][eE][sS][pP][aA][cC][eE][sS]'                opNamespaces,       '-namespaces';              // Enclose generated code into the namespace
 '\-[eE][nN][uU][mM][fF][iI][lL][eE]'                        opEnumFile,         '-enumfile';                // Global enumeration filename
 '\-[eE][nN][uU][mM][cC][lL][aA][sS][sS][eE][sS]'            opEnumClasses,      '-enumclasses';             // Use 'enum class' instead of 'enum'
 '\-[eE][nN][uU][mM][sS][tT][rR][iI][nN][gG][sS]'            opEnumStrings,      '-enumstrings';             // Create string literals for enumeration stringification
@@ -81,6 +85,7 @@ inline String const cmdLineGrammar = R"~grammar(
 //----------------------------------------
 
 '\+([fF]|([fF][iI][lL][eE][nN][aA][mM][eE]))'               fileNameParam,      '+filename';
+'\+([nN]|([nN][sS][nN][aA][mM][eE]))'                       namespaceNameParam, '+nsname';
 '\+([cC]|([cC][lL][aA][sS][sS][nN][aA][mM][eE]))'           classNameParam,     '+classname';
 '\+([sS]|([sS][tT][aA][cC][kK][nN][aA][mM][eE]))'           stackNameParam,     '+stackname';
 '\+([pP]|([pP][rR][eE][fF][iI][xX]))'                       prefixParam,        '+prefix';
@@ -141,6 +146,15 @@ ParseDataParamListEmpty             ParseDataParamList          -> ;
 ParseDataFileNameParam              ParseDataParam              -> '+filename' ':' FileName;
 ParseDataStringParam                ParseDataParam              -> '+string' ':' string;
 ParseDataDisplayParam               ParseDataParam              -> '+display';
+
+
+// *** Namespace
+
+NamespaceOption                     Option                      -> '-namespaces' NamespaceParam;
+
+NamespaceNameParam                  NamespaceParam              -> '+nsname' ':' ClassName;
+NamespaceNameParamEmpty             NamespaceParam              -> ;
+
 
 // *** EnumFile
 
