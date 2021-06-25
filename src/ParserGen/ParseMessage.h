@@ -48,7 +48,7 @@ struct ParseMessage final
     };
 
     // Masks
-    enum Masks : unsigned 
+    enum Masks : unsigned
     {
         // Internal type mask
         TypeMask        = 0x0000'000F,
@@ -56,7 +56,7 @@ struct ParseMessage final
         DisplayMask     = 0x0000'0FF0
     };
 
-    // Const for describing empty value for line or offset 
+    // Const for describing empty value for line or offset
     static constexpr size_t NoValue = size_t(-1);
 
     // Message flags (stores type and display flags)

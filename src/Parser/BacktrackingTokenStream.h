@@ -16,7 +16,7 @@ namespace SGParser
 
 // Will read tokens from source stream, and allow to backtrack in them based on markers
 template <class Token = TokenCode>
-class BacktrackingTokenStream final : public TokenStream<Token> 
+class BacktrackingTokenStream final : public TokenStream<Token>
 {
 public:
     // Const for representation of an invalid token index
@@ -65,7 +65,7 @@ public:
 
     // Backtracks several items back from current position (may be limited by RememberLength)
     bool   SeekBack(size_t count) noexcept;
-    
+
     // Backtracks to absolute position
     bool   SeekTo(size_t index) noexcept;
 
@@ -119,7 +119,7 @@ private:
 
 // Default constructor
 template <class Token>
-BacktrackingTokenStream<Token>::BacktrackingTokenStream() 
+BacktrackingTokenStream<Token>::BacktrackingTokenStream()
     : pSourceStream{nullptr},
       pFirstBlock{new StreamBlock}, // Allocate 1 stream block
       pThisBlock{pFirstBlock},

@@ -88,7 +88,7 @@ TokenizerBuffer* TokenizerBase::LoadNewBuffer(bool freeOnEmpty) {
             pFreeBuffer = newBuffer;
             return nullptr;
         }
-        // Otherwise, behave like we read 0 bytes 
+        // Otherwise, behave like we read 0 bytes
         bufferSize = 0;
     }
 

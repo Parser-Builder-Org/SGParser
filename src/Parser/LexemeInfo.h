@@ -15,7 +15,7 @@ namespace SGParser
 struct LexemeInfo final
 {
     // Action
-    enum ActionValue : unsigned 
+    enum ActionValue : unsigned
     {
         ActionNone      = 0x0000'0000u,
         ActionGoto      = 0x1000'0000u,

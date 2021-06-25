@@ -26,8 +26,8 @@ struct Production final
     // A terminal on RHS can have associated conflict actions
     struct ConflictAction final
     {
-        enum class Action 
-        { 
+        enum class Action
+        {
             Shift,
             Reduce
         };

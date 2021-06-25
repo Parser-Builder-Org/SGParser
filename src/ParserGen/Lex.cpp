@@ -11,7 +11,7 @@ namespace SGParser
 namespace Generator
 {
 
-struct RegExprParseToken final : public TokenCode 
+struct RegExprParseToken final : public TokenCode
 {
     unsigned ch = 0u;
 
@@ -90,7 +90,7 @@ struct RegExprNFAParseElement final : public ParseStackElement<RegExprParseToken
 
 // *** Regular expression parse handler for NFA
 
-class RegExprNFAParseHandler final : public ParseHandler<RegExprNFAParseElement> 
+class RegExprNFAParseHandler final : public ParseHandler<RegExprNFAParseElement>
 {
 public:
     unsigned                LexemeID   = NFA::InvalidLexeme;
@@ -221,23 +221,32 @@ public:
                 // C --> '{' CharSet '}'
             case RE_CCharSet: {
                 // Generate a string from the char std::vector
+                SG_ASSERT(parse[1].pVec);
                 String macroName;
-                macroName.resize(parse[1].pVec->size());
-                for (size_t i = 0u; i < parse[1].pVec->size(); ++i)
-                    macroName[i] = char((*parse[1].pVec)[i]);
+                macroName.reserve(parse[1].pVec->size());
+                for (auto const& ord : *parse[1].pVec) {
+                    macroName.push_back(char(ord));
+                }
 
                 // Delete the character std::vector
                 parse[1].Destroy();
 
                 // Try to find it in macro list
-                if (pMacroNFAs->find(macroName) == pMacroNFAs->end()) {
-                    pLex->CheckForErrorAndReport("Macro '%s' not defined", macroName.data());
+                SG_ASSERT(pMacroNFAs != nullptr);
+                auto const& map = *pMacroNFAs;
+                auto const& iter = map.find(macroName);
+                if (iter == map.end()) {
+                    std::string names;
+                    for (auto const& [name, _] : map)
+                        names += " '" + name + '\'';
+                    pLex->CheckForErrorAndReport("Macro '%s' not defined; there are %zu known macros:%s",
+                                                 macroName.data(), map.size(), names.data());
                     // Bad!
                     return false;
                 }
 
                 // Get the NFA from the Macros list
-                const auto pnfa = (*pMacroNFAs)[macroName];
+                const auto pnfa = iter->second;
 
                 if (!pnfa) {
                     pLex->CheckForErrorAndReport("Invalid regular expression in macro '%s' used",
@@ -330,7 +339,7 @@ public:
 
 struct RegExprDFANode final
 {
-    enum class NodeType 
+    enum class NodeType
     {
         Null,
         Epsilon,
@@ -357,10 +366,10 @@ struct RegExprDFANode final
 
     // Default constructor
     RegExprDFANode() = default;
-    
+
     // Copy constructor - calls the make copy function
     RegExprDFANode(const RegExprDFANode& node) {
-        MakeCopy(node); 
+        MakeCopy(node);
     }
 
     explicit RegExprDFANode(NodeType type)
@@ -387,7 +396,7 @@ struct RegExprDFANode final
         pParent        = nullptr;
         AcceptingState = node.AcceptingState;
 
-        for (const auto child: node.Children)
+        for (const auto child : node.Children)
             Add(new RegExprDFANode{*child});
     }
 
@@ -400,7 +409,7 @@ struct RegExprDFANode final
 
     // Adds a child list to the node
     void Add(const std::vector<RegExprDFANode*>& children) {
-        for (const auto child: children)
+        for (const auto child : children)
             Add(child);
     }
 
@@ -483,7 +492,7 @@ void FollowPos(const RegExprDFANode& node, std::vector<unsigned>& nodelist) {
 
         switch (pnode->Type) {
             case RegExprDFANode::NodeType::And:
-                if (std::find(pnode->Children[0u]->LastPos.begin(), 
+                if (std::find(pnode->Children[0u]->LastPos.begin(),
                               pnode->Children[0u]->LastPos.end(), node.Position) !=
                     pnode->Children[0u]->LastPos.end())
                     nodelist.insert(nodelist.end(), pnode->Children[1u]->FirstPos.begin(),
@@ -500,7 +509,7 @@ void FollowPos(const RegExprDFANode& node, std::vector<unsigned>& nodelist) {
                 else
                     done = true;
                 break;
-        
+
             default:
                 break;
         }
@@ -511,11 +520,11 @@ void FollowPos(const RegExprDFANode& node, std::vector<unsigned>& nodelist) {
 
 
 void PrintTree(const RegExprDFANode& node, String& str) {
-    for (const auto child: node.Children)
+    for (const auto child : node.Children)
         PrintTree(*child, str);
 
     if (node.Type == RegExprDFANode::NodeType::Char) {
-        for (const auto ch: node.Chars)
+        for (const auto ch : node.Chars)
             str += CharT(ch);
         str += ":";
         str += CharT('0' + node.Position);
@@ -527,7 +536,7 @@ void PrintTree(const RegExprDFANode& node, String& str) {
 
 
 // Constructs a DFA from a regular expression (using regular expression parser)
-struct RegExprDFAParseElement final : public ParseStackElement<RegExprParseToken> 
+struct RegExprDFAParseElement final : public ParseStackElement<RegExprParseToken>
 {
     enum class RegExprDataType
     {
@@ -539,7 +548,7 @@ struct RegExprDFAParseElement final : public ParseStackElement<RegExprParseToken
 
     RegExprDataType            DataType = RegExprDataType::Null;
 
-    union 
+    union
     {
         unsigned               ch       = 0u;
         std::vector<unsigned>* pChars;
@@ -583,7 +592,7 @@ struct RegExprDFAParseElement final : public ParseStackElement<RegExprParseToken
 
 // *** Regular expression parse handler
 
-class RegExprDFAParseHandler final : public ParseHandler<RegExprDFAParseElement> 
+class RegExprDFAParseHandler final : public ParseHandler<RegExprDFAParseElement>
 {
 public:
     unsigned                                          LexemeID          = 0u;
@@ -701,7 +710,7 @@ public:
                 // Delete std::vector
                 parse[1].Destroy();
 
-                parse[0].pNode    = new RegExprDFANode{RegExprDFANode::NodeType::Char, 
+                parse[0].pNode    = new RegExprDFANode{RegExprDFANode::NodeType::Char,
                                                        PositionCount++, charList};
                 parse[0].DataType = RegExprDFAParseElement::RegExprDataType::Node;
 
@@ -730,7 +739,7 @@ public:
                 // Delete std::vector
                 parse[2].Destroy();
 
-                parse[0].pNode    = new RegExprDFANode{RegExprDFANode::NodeType::Char, 
+                parse[0].pNode    = new RegExprDFANode{RegExprDFANode::NodeType::Char,
                                                        PositionCount++, charList};
                 parse[0].DataType = RegExprDFAParseElement::RegExprDataType::Node;
 
@@ -741,23 +750,37 @@ public:
                 // C --> '{' CharSet '}'
             case RE_CCharSet: {
                 // Generate a string from the char std::vector
+                SG_ASSERT(parse[1].pChars);
                 String macroName;
-                macroName.resize(parse[1].pChars->size());
-                for (size_t i = 0u; i < parse[1].pChars->size(); ++i)
-                    macroName[i] = char((*parse[1].pChars)[i]);
+                macroName.reserve(parse[1].pChars->size());
+                for (auto const& ord : *parse[1].pChars) {
+                    macroName.push_back(char(ord));
+                }
 
                 // Delete the character std::vector
                 parse[1].Destroy();
 
                 // Try to find it in macro list
-                if (pLex->Macros.find(macroName) == pLex->Macros.end()) {
-                    pLex->CheckForErrorAndReport("Macro '%s' not defined", macroName.data());
+                SG_ASSERT(pMacroSyntaxTrees != nullptr);
+                auto const& map = *pMacroSyntaxTrees;
+                auto const& iter = map.find(macroName);
+                if (iter == map.end()) {
+                    std::string names;
+                    for (auto const& [name, _] : map)
+                        names += " '" + name + '\'';
+                    pLex->CheckForErrorAndReport("Macro '%s' not defined; there are %zu known macros:%s",
+                                                 macroName.data(), map.size(), names.data());
                     // Bad!
                     return false;
                 }
 
+                // Invariant: macroName should also be in pLex->Macros:
+                SG_ASSERT(pLex != nullptr);
+                SG_ASSERT(pLex->Macros.find(macroName) != pLex->Macros.end());
+
                 // Get the macro node from the Macros list
-                auto& macroTree = *(*pMacroSyntaxTrees)[macroName];
+                SG_ASSERT(iter->second);
+                auto& macroTree = *iter->second;
 
                 if (!macroTree.pRoot) {
                     pLex->CheckForErrorAndReport("Invalid regular expression in macro '%s' used",
@@ -856,6 +879,7 @@ public:
 // Clear all lex data
 void Lex::Clear() noexcept {
     Macros.clear();
+    MacroNames.clear();
     Lexemes.clear();
     Expressions.clear();
     ExpressionNames.clear();
@@ -935,7 +959,7 @@ void Lex::CreateRegExpGrammar(Grammar& grammar) const {
 
     // Productions structure
     static constexpr size_t productionCount = 20u;
-    static constexpr struct 
+    static constexpr struct
     {
         const char* pName;
         const char* pSymbol;
@@ -992,7 +1016,7 @@ bool Lex::ConvertActionParam() {
     bool error = false;
 
     // Go through lexemes and convert action parameters into numbers from string
-    for (auto& lexeme: Lexemes)
+    for (auto& lexeme : Lexemes)
         if (!lexeme.ActionParam.empty()) {
             if (ExpressionNames.find(lexeme.ActionParam) != ExpressionNames.end())
                 lexeme.Info.Action = (lexeme.Info.Action & LexemeInfo::ActionMask) |
@@ -1024,8 +1048,15 @@ bool Lex::MakeDFA(DFAGen& dfa, DFAConstructType type) {
 bool Lex::MakeDFAUsingNFA(DFAGen& dfa) {
     // Store the macro NFAs
     std::map<String, NFA*> macroNFAs;
-    // Go through all macros, and create NFAs for them
-    for (const auto& [name, regExp]: Macros) {
+
+    // Go through all macros (in declaration-order) and create NFA's for them.
+    // ("In declaration-order" so a lexically-later macro can refer to a lexically-earlier macro.)
+    SG_ASSERT(MacroNames.size() == Macros.size());
+    for (const String& name : MacroNames) {
+        auto const iter = Macros.find(name);
+        SG_ASSERT(iter != Macros.end());
+        auto const& regExp = iter->second;
+
         // Create a new nfa to be filled
         const auto pnfa = new NFA;
 
@@ -1040,7 +1071,7 @@ bool Lex::MakeDFAUsingNFA(DFAGen& dfa) {
     // make an expression for them (special case)
     if (Lexemes.size() && !Expressions.size())
         Expressions.push_back({0u, unsigned(Lexemes.size())});
-    
+
     // Go through all expression lexemes and construct a list of DFA
     std::vector<NFA*> lexemeNFAList;
     DFAGen            dfa2;
@@ -1059,7 +1090,7 @@ bool Lex::MakeDFAUsingNFA(DFAGen& dfa) {
 
                 // This seems to be necessary here in case of error
                 delete pnfa;
-                for (const auto nfa: lexemeNFAList)
+                for (const auto nfa : lexemeNFAList)
                     delete nfa;
 
                 return false;
@@ -1092,7 +1123,7 @@ bool Lex::MakeDFAUsingNFA(DFAGen& dfa) {
     }
 
     // Free all the macro NFA's
-    for (const auto& [_, nfa]: macroNFAs)
+    for (const auto& [_, nfa] : macroNFAs)
         delete nfa;
 
     return true;
@@ -1131,7 +1162,7 @@ bool Lex::MakeNFA(NFA& nfa, const String& regExp, std::map<String, NFA*>& macroN
     // Let the parse class parse the regular expression using
     // using the custom parseHandler reduce callback
     if (!parse.DoParse(parseHandler)) {
-        const ParseMessage msg{ParseMessage::ErrorMessage, "", 
+        const ParseMessage msg{ParseMessage::ErrorMessage, "",
                                "NFA: Regular expression parsing error"};
         Messages.AddMessage(msg);
         return false;
@@ -1189,7 +1220,7 @@ bool Lex::MakeDFA(DFAGen& dfa, DFASyntaxTree<T>& tree, std::vector<Lexeme>& lexe
                 }
 
         // Go through all characters
-        for (const auto& [state, stateVec]: charIndexs) {
+        for (const auto& [state, stateVec] : charIndexs) {
             nextState = stateVec;
 
             // Sort the indexes and make sure there are no duplicates
@@ -1278,9 +1309,15 @@ bool Lex::MakeDFAUsingSyntaxTree(DFAGen& dfa) {
     if (dfa.IsValid())
         return false;
 
-    // Go through all macros, and create NFAs for them
+    // Go through all macros (in declaration-order) and create DFASyntaxTree's for them.
+    // ("In declaration-order" so a lexically-later macro can refer to a lexically-earlier macro.)
     std::map<String, DFASyntaxTree<RegExprDFANode>*> macroSyntaxTrees;
-    for (const auto& [name, regExp]: Macros) {
+    SG_ASSERT(MacroNames.size() == Macros.size());
+    for (const String& name : MacroNames) {
+        auto const iter = Macros.find(name);
+        SG_ASSERT(iter != Macros.end());
+        auto const& regExp = iter->second;
+
         // Create a new syntax tree
         const auto ptree = new DFASyntaxTree<RegExprDFANode>;
 

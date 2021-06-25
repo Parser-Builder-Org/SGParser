@@ -49,10 +49,10 @@ public:
 class DFAGen final : public DFA
 {
 public:
-    enum class TableType 
+    enum class TableType
     {
         TransitionTable,
-        AcceptStates 
+        AcceptStates
     };
 
     static constexpr unsigned CT_RemoveEmpty      = 0x01;

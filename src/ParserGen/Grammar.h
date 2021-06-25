@@ -27,7 +27,7 @@ namespace Generator
 // Grammar Debug structure
 struct GrammarDebugData final
 {
-    enum ActionFlags : unsigned  
+    enum ActionFlags : unsigned
     {
         Canonical                   = 0x0000'0001,
         ConflictReport              = 0x0000'0010,
@@ -72,7 +72,7 @@ public:
     // Map from tokens to their precedence & associativity
     struct TerminalPrec final
     {
-        enum Assoc : unsigned 
+        enum Assoc : unsigned
         {
             Left       = 0x0000'0000,
             Right      = 0x4000'0000,
@@ -271,7 +271,7 @@ private:
 
 
 // Generic grammar output with no functionality except default constructor
-class GrammarOutput 
+class GrammarOutput
 {
 public:
     // Default Constructor
@@ -310,7 +310,7 @@ protected:
 
 
 // Grammar Output which dumps C files
-class GrammarOutputC final : public GrammarOutput 
+class GrammarOutputC final : public GrammarOutput
 {
 public:
     GrammarOutputC(Grammar* pgrammar = nullptr, const String& namespaceName = String{},

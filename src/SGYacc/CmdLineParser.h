@@ -21,7 +21,7 @@ namespace Yacc
 
 // *** Command Line structures
 
-struct CmdLineParam final 
+struct CmdLineParam final
 {
     String Name;
     String Value;
@@ -36,7 +36,7 @@ struct CmdLineOption final
 
 // *** YACC Command Line parse handler
 
-class CmdLineParseHandler final : public ParseHandler<ParseStackGenericElement> 
+class CmdLineParseHandler final : public ParseHandler<ParseStackGenericElement>
 {
 public:
     std::vector<Production*>           Productions;

@@ -151,7 +151,7 @@ size_t ParseTableProduction::PrintRHS(String& str,
 
         if (pProduction->Right(i) & ProductionMask::Terminal) {
             if (pgrammarSymbolsInv)
-                dest += StringWithFormat("'%s' ", 
+                dest += StringWithFormat("'%s' ",
                                          (*pgrammarSymbolsInv)[pProduction->Right(i)]->data());
             else {
                 const unsigned terminal = pProduction->Right(i) & ProductionMask::TerminalValue;
@@ -186,7 +186,7 @@ void ParseTableProduction::PrintLookAhead(String& str,
     String dest;
     bool   flag = false;
 
-    for (const auto iTerminal: LookAhead) {
+    for (const auto iTerminal : LookAhead) {
         if (flag)
             dest += " ";
         flag = true;
@@ -226,7 +226,7 @@ void ParseTableProduction::Print(String& str,
         // Build the format string with the correct spacing
         buff  = StringWithFormat("%%-%zus -> ", leftSpace);
         // Store the left non terminal
-        dest += StringWithFormat(buff.data(), 
+        dest += StringWithFormat(buff.data(),
                                  (*pgrammarSymbolsInv)[pProduction->Left]->data());
     } else
         dest += StringWithFormat("%-3d -> ", pProduction->Left);

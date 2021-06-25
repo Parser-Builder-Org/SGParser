@@ -16,11 +16,11 @@ namespace Generator
 {
 
 // Implementation of the SGParser input stream interface that allows to use standard file stream
-class FileInputStream final : public InputStream 
+class FileInputStream final : public InputStream
 {
 public:
     FileInputStream() = default;
-    
+
     FileInputStream(const FileInputStream&)                = delete;
     FileInputStream(FileInputStream&&) noexcept            = delete;
     FileInputStream& operator=(const FileInputStream&)     = delete;

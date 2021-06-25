@@ -19,7 +19,7 @@ namespace Generator
 class FileOutputStream final : public OutputStream
 {
 public:
-    enum class Mode 
+    enum class Mode
     {
         Append,
         Truncate
@@ -27,7 +27,7 @@ public:
 
 public:
     FileOutputStream() = default;
-    
+
     FileOutputStream(const FileOutputStream&)                = delete;
     FileOutputStream(FileOutputStream&&) noexcept            = delete;
     FileOutputStream& operator=(const FileOutputStream&)     = delete;
@@ -61,7 +61,7 @@ public:
 
     bool Close() override {
         fileStream.close();
-        return !fileStream.is_open(); 
+        return !fileStream.is_open();
     }
 
 private:

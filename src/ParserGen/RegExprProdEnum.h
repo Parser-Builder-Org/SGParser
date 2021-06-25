@@ -2,7 +2,7 @@
 // Content:   Regular expressions production terms enumeration
 // Provided AS IS under MIT License; see LICENSE file in root folder.
 
-enum RegExprProductions 
+enum RegExprProductions
 {
     RE_Accept,
     RE_RegExpConcat,

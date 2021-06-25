@@ -72,7 +72,7 @@ public:
     TextOutputStream(TextOutputStream&&) noexcept = delete;
 
     // Outputs a 'size' number of chars from string buffer (the data can include '0' values)
-    // Negative 'size' means output a string up to '0' value (suitable for 
+    // Negative 'size' means output a string up to '0' value (suitable for
     // output an entire null-terminated string)
     StreamSize WriteText(const char* str, StreamSize size = -1) {
         if (!str)
@@ -112,7 +112,7 @@ public:
 
     // Constructor from String
     explicit MemBufferInputStream(const String& bufferString) noexcept
-        : MemBufferInputStream{bufferString.data(), bufferString.size()} 
+        : MemBufferInputStream{bufferString.data(), bufferString.size()}
     {}
 
     // Constructor from the buffer of known size

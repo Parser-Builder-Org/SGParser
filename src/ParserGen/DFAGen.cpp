@@ -8,7 +8,7 @@
 #include "DFAGen.h"
 #include "Tokenizer.h"
 
-namespace SGParser 
+namespace SGParser
 {
 namespace Generator
 {
@@ -34,10 +34,10 @@ bool DFAGen::Create(const NFA& nfa, const std::vector<Lexeme>& lexemes,
 
     // Search for maximum character used (to determine the width of the table)
     // And also store all characters used in the char set
-    for (const auto infaSet: tempList)
+    for (const auto infaSet : tempList)
         charSet.insert(infaSet->LinkChar.begin(), infaSet->LinkChar.end());
 
-    for (const auto icharSet: charSet)
+    for (const auto icharSet : charSet)
         CharTable.SetValue(icharSet, unsigned(GetCharCount()));
 
     // Put e-closure(pnfa.initialState) in for the first state of dfaStates
@@ -61,13 +61,13 @@ bool DFAGen::Create(const NFA& nfa, const std::vector<Lexeme>& lexemes,
         const auto& dfaState = *dfaStates[state];
 
         // Go through and insert all character links with their destination
-        for (const auto it: dfaState)
+        for (const auto it : dfaState)
             for (size_t j = 0u; j < it->LinkChar.size(); ++j)
                 if (const auto ch = it->LinkChar[j]; ch != 0u)
                     charLinks[ch].push_back(it->LinkPtr[j]);
 
         // Go through all characters
-        for (const auto& [ch, nodes]: charLinks) {
+        for (const auto& [ch, nodes] : charLinks) {
             // There can never be empty node sets, because they wouldn't have been added
             // Copy next std::vector
             *pnextState = nodes;
@@ -271,7 +271,7 @@ size_t DFAGen::Compress([[maybe_unused]] unsigned tableType, unsigned compressTy
     // *** Combine Duplicate rows
 
     if (compressType & CT_CombineDuplicate) {
-        // Map the indexes from the old set to the new one 
+        // Map the indexes from the old set to the new one
         // (keep inverse map for new table creation)
         std::map<StateType, StateType>      match;
         std::map<StateType, StateType>      invmatch;
@@ -316,7 +316,7 @@ size_t DFAGen::Compress([[maybe_unused]] unsigned tableType, unsigned compressTy
         for (size_t istate = 0u; istate < TransitionTable.size(); ++istate) {
             newTable[istate].resize(newSet.size());
             for (size_t icharSet = 0u; icharSet < newSet.size(); ++icharSet)
-                newTable[istate][icharSet] = 
+                newTable[istate][icharSet] =
                     TransitionTable[istate][invmatch[StateType(icharSet)]];
         }
 

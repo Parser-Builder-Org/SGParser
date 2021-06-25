@@ -328,7 +328,7 @@ void StdGrammarParseData::CreateLexemes(std::vector<Lexeme>& lexemes) {
       {"push",             "%push"                   },
       {"pop",              "%pop"                    },
       {"goto",             "%goto"                   },
- 
+
       {"prec",             "%prec"                   },
       {"left",             "%left"                   },
       {"right",            "%right"                  },
@@ -407,7 +407,7 @@ struct StdGrammarToken final : TokenCode
 };
 
 
-struct StdGrammarStackElement : ParseStackElement<StdGrammarToken> 
+struct StdGrammarStackElement : ParseStackElement<StdGrammarToken>
 {
     // *** Data members
 
@@ -525,7 +525,7 @@ struct StdGrammarStackElement : ParseStackElement<StdGrammarToken>
                 break;
 
             case DataStackElementVec:
-                for (auto& se: *pStackElementVec)
+                for (auto& se : *pStackElementVec)
                     se.Cleanup();
                 delete pStackElementVec;
                 break;
@@ -628,7 +628,7 @@ bool StdGrammarParseHandler::BuildProductionRHS(std::vector<std::vector<String>>
     // Determines the number of productions which will
     // be built from the data and sets up the groups correspondingly
     size_t prodCount = 1u;
-    for (const auto& element: *right.pStackElementVec) {
+    for (const auto& element : *right.pStackElementVec) {
         // If the sub stack element is also an array of stack elements than
         // create add a new symbol group to the groups array
         if (element.Type == StdGrammarStackElement::DataStackElementVec) {
@@ -670,7 +670,7 @@ bool StdGrammarParseHandler::BuildProductionRHS(std::vector<std::vector<String>>
             // Group counter
             size_t ig = 0u;
             // Go through all right hand side stack elements
-            for (auto& pstackElement: *right.pStackElementVec)
+            for (auto& pstackElement : *right.pStackElementVec)
                 // Determine what type of stack element it is and store data
                 switch (pstackElement.Type) {
                     // Add the simple stack element string to the destination production
@@ -740,7 +740,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
             ++PrecValue;
 
             // Add the structure to the precedence map
-            for (const auto& str: *parse[termlist].pStringVec) {
+            for (const auto& str : *parse[termlist].pStringVec) {
                 const auto tokenCode = str[0u] == '\''
                                            ? pLex->LexemeAliasToToken[str.substr(1u)]
                                            : pLex->LexemeNameToToken[str];
@@ -793,7 +793,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
     // of the production
 
     switch (productionID) {
-        // ROOT_BLOCK -> MACRO_SECTION EXPRESSION_SECTIONLIST PRECEDENCE_SECTION PRODUCTION_SECTION 
+        // ROOT_BLOCK -> MACRO_SECTION EXPRESSION_SECTIONLIST PRECEDENCE_SECTION PRODUCTION_SECTION
         case SG_RootBlock:
             break;
 
@@ -836,15 +836,22 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
             // Don't do anything if there was a sub error
             if (parse[0].IsValid() && parse[1].IsValid()) {
                 // Add to Macros map instead of Lexemes
-                if (pLex->Macros.find(*parse[0].pString) == pLex->Macros.end()) {
+                const String& name = *parse[0].pString;
+                SG_ASSERT(pLex->Macros.size() == pLex->MacroNames.size());
+                if (pLex->Macros.find(name) == pLex->Macros.end()) {
                     // Store the macro expression
-                    pLex->Macros[*parse[0].pString] = std::move(*parse[1].pString);
+                    SG_ASSERT(std::find(pLex->MacroNames.begin(), pLex->MacroNames.end(), name)
+                              == pLex->MacroNames.end());
+                    pLex->Macros[name] = std::move(*parse[1].pString);
+                    pLex->MacroNames.push_back(name);
                     // Add the lexeme line number to a map
-                    MacroLines.insert_or_assign(std::move(*parse[0].pString), parse[0].Line);
-                } else
+                    MacroLines.insert_or_assign(std::move(name), parse[0].Line);
+                } else {
                     checkForErrorAndReport(0, "YC0027E", "Macro '%s' already defined on line %zu",
-                                           parse[0].pString->data(),
-                                           MacroLines[*parse[0].pString] + 1u);
+                                           name.data(),
+                                           MacroLines[name] + 1u);
+                }
+                SG_ASSERT(pLex->Macros.size() == pLex->MacroNames.size());
             }
             // Cleanup
             parse[1].Cleanup();
@@ -1312,7 +1319,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
             // PRODUCTION_STARTSYMBOL    -> 'production' PRODUCTION_STARTSYMBOLLIST;
         case SG_ProdStartSymbolDecl: {
             // Store the production start symbols
-            for (auto& str: *parse[1].pStringVec)
+            for (auto& str : *parse[1].pStringVec)
                 if (ProductionStartSymbols.find(str) == ProductionStartSymbols.end()) {
                     // Store the production block name
                     ProductionStartSymbols.insert_or_assign(str, parse[1].Line);
@@ -1385,7 +1392,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
                                      std::make_move_iterator(parse[0].pStringVec->end()));
 
                     // Add each productions
-                    for (const auto& vec: right) {
+                    for (const auto& vec : right) {
                         prod.Right = vec;
                         Productions.push_back(prod);
                     }
@@ -1558,7 +1565,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
             }
 
             // Use special '>' marker for %shifton
-            for (const auto& str: *parse[3].pStringVec)
+            for (const auto& str : *parse[3].pStringVec)
                 parse[0].pStringVec->push_back(">" + str);
             // Cleanup
             parse[3].Cleanup();
@@ -1579,7 +1586,7 @@ bool StdGrammarParseHandler::Reduce(Parse<StdGrammarStackElement>& parse, unsign
                 parse[0].Type       = StdGrammarStackElement::DataStringVec;
             }
             // Use special '<' marker for %reduceon
-            for (const auto& str: *parse[3].pStringVec)
+            for (const auto& str : *parse[3].pStringVec)
                 parse[0].pStringVec->push_back("<" + str);
             // Cleanup
             parse[3].Cleanup();
@@ -1979,7 +1986,7 @@ bool StdGrammarParseData::BuildParser(InputStream* pinitStr) {
     UserGrammar.Clear();
 
     // Setup grammar debug and buffer
-    UserGrammar.GetMessageBuffer().SetMessageBuffer(Messages.GetMessageBuffer(), 
+    UserGrammar.GetMessageBuffer().SetMessageBuffer(Messages.GetMessageBuffer(),
                                                     Messages.GetMessageFlags());
 
     // Now 'grammarSymbols' and 'productions' contain the
@@ -2138,7 +2145,7 @@ bool StdGrammarParseData::CreateSymbolMap(StdGrammarParseHandler& data,
 
                 // Get the precedence value
                 if (UserLex.Precedence.find(symbolId) != UserLex.Precedence.end())
-                    precValue = UserLex.Precedence[symbolId].Value & 
+                    precValue = UserLex.Precedence[symbolId].Value &
                                 Grammar::TerminalPrec::PrecMask;
                 else
                     precValue = 0u;
@@ -2179,7 +2186,7 @@ bool StdGrammarParseData::CreateSymbolMap(StdGrammarParseHandler& data,
 
                         if (UserLex.LexemeAliasToToken.find(symbol) !=
                             UserLex.LexemeAliasToToken.end()) {
-                            symbolId = UserLex.LexemeAliasToToken[symbol] | 
+                            symbolId = UserLex.LexemeAliasToToken[symbol] |
                                        ProductionMask::Terminal;
                             terminalIds.push_back(symbolId);
                         } else

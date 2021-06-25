@@ -6,7 +6,7 @@
 
 #include "DFA.h"
 
-namespace SGParser 
+namespace SGParser
 {
 
 // ***** Deterministic Finite Automaton

@@ -4,7 +4,7 @@
 
 #include "ParseTable.h"
 
-namespace SGParser 
+namespace SGParser
 {
 
 // ***** Parse Table class implementation

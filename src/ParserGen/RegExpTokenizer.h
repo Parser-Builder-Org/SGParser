@@ -15,7 +15,7 @@ namespace Generator
 // *** Simple Regular Expression Tokenizer
 
 template <class Token>
-class RegExpTokenizer final : public TokenizerImpl<Token> 
+class RegExpTokenizer final : public TokenizerImpl<Token>
 {
 public:
     // *** Constructors
@@ -54,7 +54,7 @@ public:
         // it down as ch character constant. Otherwise, set the code equal to the
         // value of the operator's character
         if (ch != '+' && ch != '.' && ch != '|' && ch != '*' && ch != '(' &&
-            ch != ')' && ch != '[' && ch != ']' && ch != '{' && ch != '}' && 
+            ch != ')' && ch != '[' && ch != ']' && ch != '{' && ch != '}' &&
             ch != '-' && ch != '^' && ch != '?')
             code = CodeType('c') + TokenCode::TokenFirstID;
         else

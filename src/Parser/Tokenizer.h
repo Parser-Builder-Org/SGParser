@@ -21,7 +21,7 @@ struct TokenCode
     using CodeType = unsigned;
 
     // Reserved token codes
-    enum TCode : CodeType 
+    enum TCode : CodeType
     {
         TokenError,  // Error token, in case an error occurred
         TokenEOF,    // End of file (input) token
@@ -125,7 +125,7 @@ private:
 
 // Converts StreamInput into Token stream
 template <class Token>
-class TokenizerImpl : public TokenStream<Token>, public TokenizerBase 
+class TokenizerImpl : public TokenStream<Token>, public TokenizerBase
 {
 public:
     using PosTracker      = typename Token::PosTracker;
@@ -173,7 +173,7 @@ protected:
 // ***** Generic token
 
 // Simple token containing the code, string and position
-struct GenericToken final : TokenCode 
+struct GenericToken final : TokenCode
 {
     using PosTracker      = LineOffsetPosTracker;
     using InputCharReader = TokenCharReaderBase<TokenizerBase::ByteReader, PosTracker>;

@@ -25,7 +25,7 @@ public:
     ParseTableGen() = default;
 
     // Make parse table out of grammar
-    explicit ParseTableGen(class Grammar& grammar, 
+    explicit ParseTableGen(class Grammar& grammar,
                            ParseTableType tableType = ParseTableType::CLR) {
         // Create a new parse table
         Create(grammar, tableType);

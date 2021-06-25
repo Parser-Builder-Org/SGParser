@@ -32,32 +32,26 @@ inline String StringWithVAFormat(const CompatibleChar* format, va_list argList) 
     static_assert(std::is_integral_v<CompatibleChar> && sizeof(CompatibleChar) == 1u,
                   "String supports only single-byte character types, e.g. char or char8_t");
 
-    va_list argListCopy;
-    va_copy(argListCopy, argList);
+    // Determine required buffer-size:
+    va_list argList2;
+    va_copy(argList2, argList);
+    const auto ilen = std::vsnprintf(nullptr, 0u, reinterpret_cast<const char*>(format), argList2);
+    SG_ASSERT(ilen >= 0);  // if this fails, vsnprintf() discovered an error - possibly format-error
+    va_end(argList2);
 
-    // Small buffer size (value should be enough for typical conversions)
-    static constexpr size_t smallBufferSize = 64u;
-    String result(smallBufferSize, CharT{});
+    if (ilen == 0)
+        return String{};
 
-    // Try to format string using a small buffer
-    const auto len = std::vsnprintf(reinterpret_cast<char*>(result.data()), smallBufferSize,
-                                    reinterpret_cast<const char*>(format), argList);
-    SG_ASSERT(len >= 0);
-    const auto length = static_cast<size_t>(len);
+    // Write it:
+    String result(static_cast<size_t>(ilen) + 1u, CharT{});
+    static_assert(sizeof(result.front()) == 1u, "String supports only single-byte character, e.g., char or char8_t");
+    [[maybe_unused]] const auto ilen2 = std::vsnprintf(reinterpret_cast<char*>(result.data()),
+                                                       result.size(),
+                                                       reinterpret_cast<const char*>(format),
+                                                       argList);
+    SG_ASSERT(ilen2 == ilen);
 
-    // If not enough chars in the buffer, try to format again with big-enough buffer
-    if (length >= smallBufferSize) {
-        result.resize(length + 1u);
-        [[maybe_unused]] const auto len2 = std::vsnprintf(reinterpret_cast<char*>(result.data()),
-                                                          length + 1u,
-                                                          reinterpret_cast<const char*>(format),
-                                                          argListCopy);
-        SG_ASSERT(len2 == len);
-    }
-
-    va_end(argListCopy);
-    result.resize(length);
-
+    result.resize(static_cast<size_t>(ilen2));
     return result;
 }
 

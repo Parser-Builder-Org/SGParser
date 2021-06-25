@@ -9,7 +9,7 @@ namespace SGParser
 {
 
 // Types of parse tables supported
-enum class ParseTableType 
+enum class ParseTableType
 {
     // Set initially, no table
     None,

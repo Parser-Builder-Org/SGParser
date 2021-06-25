@@ -61,12 +61,12 @@ public:
     // Just constructs an empty NFA
     // Rarely used since the other constructors are much more useful
     explicit NFA(unsigned lexemeID)
-        : LexemeId{lexemeID} { 
+        : LexemeId{lexemeID} {
     }
 
     // Construct a NFA that accepts the one character String
     NFA(unsigned c, unsigned lexemeId) {
-        Create(c, lexemeId); 
+        Create(c, lexemeId);
     }
 
     // Construct a NFA that accepts any one of the given characters

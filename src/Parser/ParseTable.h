@@ -37,7 +37,7 @@ public:
         // or a production to reduce by
         ExtractMask = 0x0000'3FFF
     };
-    
+
     // Concise array of productions
     // This is needed for reduce actions
     struct ReduceProduction final
@@ -68,7 +68,7 @@ public:
     };
 
     // Structure for every state
-    struct StateInfo final 
+    struct StateInfo final
     {
         // Record flag
         uint8_t Record             : 1;
@@ -135,7 +135,7 @@ public:
                   ReduceProductions[action].Left < GotoWidth);
         return unsigned(int16_t(GotoTable[state][ReduceProductions[action].Left]));
     }
-    
+
     unsigned GetLeftReduceState(unsigned state, unsigned left) const {
         SG_ASSERT(state < GotoTable.size() && left < GotoWidth);
         return unsigned(int16_t(GotoTable[state][left]));

@@ -656,7 +656,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
 
     // Global enumeration filename
     if (CheckOption("EnumFile")) {
-        writeEnums = !(CheckOption("ProdEnum") || CheckOption("TermEnum") || 
+        writeEnums = !(CheckOption("ProdEnum") || CheckOption("TermEnum") ||
                      CheckOption("NonTermEnum"));
         enumFilename = "ParseEnum.h";
         // Set filename to default if empty
@@ -666,7 +666,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
     // Use namespaces
     const bool useNamespaces = CheckOption("Namespaces");
     String     namespaceName;
-       
+
     if (useNamespaces) {
         GetOptionParam("Namespaces", "Classname", namespaceName);
         if (namespaceName.empty())
@@ -700,7 +700,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         goto output_results;
 
     // Generate the pseudo-copyright header string
-    copyrightHeader = CopyrightHeader(); 
+    copyrightHeader = CopyrightHeader();
 
     // Store all errors in the load message list
     pmessages->SetMessageBuffer(&loadGrammarMessages,
@@ -751,7 +751,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
                 GrammarDebugData::ConflictReportNoLineNumbers;
 
         if (!CheckOptionParam("ConflictReport", "Labels"))
-            parseData.GetGrammar().GetDebugData().Flags |= 
+            parseData.GetGrammar().GetDebugData().Flags |=
                 GrammarDebugData::ConflictReportNoLabels;
 
         if (!CheckOptionParam("ConflictReport", "Points"))
@@ -774,7 +774,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
                 tableType = ParseTableType::LALR;
             else if (tableTypeStr == "LR")
                 tableType = ParseTableType::LR;
-        } 
+        }
 
         if (!parseData.MakeParseTable(parseTable, tableType)) {
             output.Add("Failed to make the " + tableTypeStr + " parse table");
@@ -796,7 +796,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
             TextOutputStream tstream{file};
             for (size_t i = 0u; i < canonicalItems.size(); ++i) {
                 tstream.WriteText(StringWithFormat("\nItem %zu - 0x%02X\n", i, unsigned(i)));
-                for (const auto& item: canonicalItems[i])
+                for (const auto& item : canonicalItems[i])
                     tstream.WriteText(item + "\n");
             }
             output.Add("Wrote the canonical data to '" + filename + "'");
@@ -951,7 +951,7 @@ void CmdLineParseHandler::Execute(Generator::StdGrammarParseData& parseData) {
         GetOptionParam("TermEnum", "Prefix", prefix);
 
         // Create the terminal enumeration
-        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName, 
+        GrammarOutputC grammarOut{&parseData.GetGrammar(), namespaceName,
                                   useEnumClasses, createEnumStrings};
         grammarOut.CreateTerminalEnum(termEnum, parseData.GetLex(), classname, prefix);
 
@@ -1201,7 +1201,7 @@ output_results:
         // Open the file and dump the string
         if (file.Open(filename, FileOutputStream::Mode::Truncate)) {
             TextOutputStream tstream{file};
-            for (const auto& str: output.Buffer)
+            for (const auto& str : output.Buffer)
                 tstream.WriteText(str);
         }
     }

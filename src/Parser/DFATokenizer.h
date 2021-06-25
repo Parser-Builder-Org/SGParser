@@ -17,7 +17,7 @@ namespace SGParser
 // ***** DFA-Based tokenizer used for general parsing
 
 template <class Token>
-class DFATokenizer : public TokenizerImpl<Token> 
+class DFATokenizer : public TokenizerImpl<Token>
 {
 public:
     // Default constructor
@@ -164,7 +164,7 @@ Token& DFATokenizer<Token>::GetNextToken(Token& token) {
                 ExpressionStack.push_back(ExpressionStackTop);
                 // Fall through to goto
                 [[fallthrough]];
-                
+
             case LexemeInfo::ActionGoto:
                 ExpressionStackTop = lexinfo.Action & LexemeInfo::ActionValueMask;
                 break;

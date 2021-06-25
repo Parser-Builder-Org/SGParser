@@ -75,7 +75,7 @@ public:
 
     // Return the expression start state for a given state
     unsigned GetExpressionStartState(unsigned state) const {
-        return ExpressionStartStates[state]; 
+        return ExpressionStartStates[state];
     }
 
     // Return table size
@@ -86,7 +86,7 @@ public:
 
     // Return the number of expression start states
     size_t   GetExpressionStartStateCount() const noexcept {
-        return ExpressionStartStates.size(); 
+        return ExpressionStartStates.size();
     }
 
     // Return the number of lexemes (lexeme infos)
@@ -101,7 +101,7 @@ public:
 
 protected:
     using CharTableType = MappedTable<unsigned, unsigned(-1)>;
-    
+
     std::vector<std::vector<StateType>> TransitionTable;
     std::vector<StateType>              AcceptStates;
 

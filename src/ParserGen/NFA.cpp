@@ -47,7 +47,7 @@ bool NFA::Create(const std::vector<unsigned>& c, unsigned lexemeID) {
     const auto ptempNode = NewState(1u);
 
     // ...with many links between them on c[i].
-    for (const auto ch: c)
+    for (const auto ch : c)
         AddLink(pStartState, ch, ptempNode);
 
     return true;
@@ -77,20 +77,20 @@ bool NFA::Create(const NFA& n, unsigned newLexemeId) {
     // that maps from the old pointer address to the new pointer address
     std::map<NFANode*, NFANode*> pointerMap;
 
-    for (const auto igraph: graph)
+    for (const auto igraph : graph)
         pointerMap[igraph] = new NFANode;
 
     // Go through all of the nodes in the old graph and copy them to
     // the new graph. Translate the pointers in the LinkPtr field
     // using the pointerMap created above
-    for (const auto n1: graph) {
+    for (const auto n1 : graph) {
         const auto n2 = pointerMap[n1];
 
         n2->AcceptingState = n1->AcceptingState;
         n2->Id             = n1->Id;
         n2->LinkChar       = n1->LinkChar;
 
-        for (const auto ptr: n1->LinkPtr)
+        for (const auto ptr : n1->LinkPtr)
             n2->LinkPtr.push_back(pointerMap[ptr]);
     }
 
@@ -98,7 +98,7 @@ bool NFA::Create(const NFA& n, unsigned newLexemeId) {
     pStartState = pointerMap[n.pStartState];
 
     // Copy/translate the final state std::vector
-    for (const auto fs: n.FinalState) {
+    for (const auto fs : n.FinalState) {
         const auto ptr = pointerMap[fs];
 
         if (newLexemeId && ptr->AcceptingState)
@@ -121,7 +121,7 @@ void NFA::Destroy() {
 
     TraverseGraph(pStartState, graph);
 
-    for (const auto igraph: graph)
+    for (const auto igraph : graph)
         delete igraph;
 
     FinalState.clear();
@@ -160,7 +160,7 @@ void NFA::Concat(NFA& b) {
     } else {
         // Connect all of final states to the start state of b
         // Those final states are no longer final states
-        for (const auto fs: FinalState) {
+        for (const auto fs : FinalState) {
             AddLink(fs, NFANode::Epsilon, b.pStartState);
             fs->AcceptingState = 0u;
         }
@@ -177,7 +177,7 @@ void NFA::Concat(NFA& b) {
 
     // Connect all of b's final states to the new final state
     // Those states are no longer final states
-    for (const auto fs: b.FinalState) {
+    for (const auto fs : b.FinalState) {
         AddLink(fs, NFANode::Epsilon, pfinalState);
         fs->AcceptingState = 0u;
     }
@@ -208,7 +208,7 @@ void NFA::Or(NFA& b) {
 
         // Connect all the final states of a and b to the new final state
         // Make the final states of a and b no longer final states
-        for (const auto fs: FinalState) {
+        for (const auto fs : FinalState) {
             AddLink(fs, NFANode::Epsilon, pfinalState);
             fs->AcceptingState = 0u;
         }
@@ -217,7 +217,7 @@ void NFA::Or(NFA& b) {
     if (b.pStartState) {
         AddLink(pnewStartState, NFANode::Epsilon, b.pStartState);
 
-        for (const auto fs: b.FinalState) {
+        for (const auto fs : b.FinalState) {
             AddLink(fs, NFANode::Epsilon, pfinalState);
             fs->AcceptingState = 0u;
         }
@@ -257,7 +257,7 @@ void NFA::Kleene(KleeneType type) {
     // Connect all final states of a to the new final
     // state and back to the start state of a
     // These states are no longer final states
-    for (const auto fs: FinalState) {
+    for (const auto fs : FinalState) {
         AddLink(fs, NFANode::Epsilon, pfinalState);
         if (type == KleeneType::ConnectBack || type == KleeneType::ConnectBoth)
             AddLink(fs, NFANode::Epsilon, pStartState);
@@ -287,7 +287,7 @@ void NFA::CombineNFAs(const std::vector<NFA*>& NFAList) {
 
     // Connect the start state to the start state of each of the NFAs in the list
     // Also add each NFAs final states to our final state list
-    for (const auto nfa: NFAList) {
+    for (const auto nfa : NFAList) {
         // Should probably check to see if any of the NFA's are equal to this one
 
         AddLink(pStartState, NFANode::Epsilon, nfa->pStartState);
@@ -306,7 +306,7 @@ void NFA::PrintFA() const {
     TraverseGraph(pStartState, graph);
 
     size_t i = 0u;
-    for (const auto pn: graph) {
+    for (const auto pn : graph) {
         std::printf("NFANode %zu (%p) [%u]: accepting = %u:", i,
                     (void*)pn, pn->Id, pn->AcceptingState);
 
@@ -326,10 +326,10 @@ void NFA::PrintFADotty(String& str) const {
 
     NumberFA();
     TraverseGraph(pStartState, graph);
-    
+
     String dest = "digraph G {\n";
 
-    for (const auto pn: graph) {
+    for (const auto pn : graph) {
         if (pn->AcceptingState)
             dest += StringWithFormat("n%u [label=\"n%u: a%u\" peripheries=3]\n",
                                      pn->Id, pn->Id, pn->AcceptingState);
@@ -361,7 +361,7 @@ void NFA::NumberFA(void) const {
     TraverseGraph(pStartState, graph);
 
     unsigned i = 0u;
-    for (const auto igraph: graph)
+    for (const auto igraph : graph)
         igraph->Id = i++;
 }
 
@@ -371,7 +371,7 @@ void NFA::TraverseGraph(NFANode* seed, NodeSet& visited) const {
     // Insert node if it's not already there
     visited.insert(seed);
 
-    for (const auto node: seed->LinkPtr) {
+    for (const auto node : seed->LinkPtr) {
         // If the node is not already inserted
         if (visited.find(node) == visited.end()) {
             // Traverse the rest of the graph (traversing will also insert the node)

@@ -8,7 +8,7 @@
 #include "Grammar.h"
 #include "Lex.h"
 
-namespace SGParser 
+namespace SGParser
 {
 namespace Generator
 {
@@ -186,7 +186,7 @@ void Grammar::CreateInverseSymbols(std::map<unsigned, const String*>& grammarSym
 // Refer to p. 222, Ullman
 void Grammar::Closure(std::vector<ParseTableProduction>& closure) const {
     // Keep a set of productions we have looked at so far
-    // we may have to examine a few several times (if their lookahead changed) 
+    // we may have to examine a few several times (if their lookahead changed)
     // in order propagate lookahead correctly
     std::set<unsigned>    lookAtSet;
     std::vector<unsigned> lookAt;
@@ -235,7 +235,7 @@ void Grammar::Closure(std::vector<ParseTableProduction>& closure) const {
         // (whose Left is the same as our nonterminal after the dot)
         const auto  it          = Productions.find(nonTerminal);
         const auto& derivations = it != Productions.end()
-                                      ? it->second 
+                                      ? it->second
                                       : decltype(Productions)::mapped_type{};
         for (const auto& der: derivations) {
             // Find a production with the same body in the set
@@ -325,7 +325,7 @@ bool Grammar::First(std::set<unsigned>& terminalsFound, unsigned symbol, bool* m
     // Check if there's a Productions to epsilon
     const auto  it         = Productions.find(symbol);
     const auto& production = it != Productions.end()
-                                 ? it->second 
+                                 ? it->second
                                  : decltype(Productions)::mapped_type{};
     for (const auto& prod: production)
         if (prod.pProduction->Length == 0u)
@@ -495,8 +495,8 @@ void Grammar::GetNonterminalFollowProductions(const MakeTableData& td,
                     // Found our state
                     if (td.ActionTable[state][la] & ParseTable::ReduceMask &&
                         td.ActionTable[state][la] != ParseTable::AcceptValue) {
-                        const unsigned left = 
-                            td.Table.ReduceProductions[td.ActionTable[state][la] & 
+                        const unsigned left =
+                            td.Table.ReduceProductions[td.ActionTable[state][la] &
                                                        ~ParseTable::ReduceMask].Left;
                         if (leftSet.find(left) == leftSet.end()) {
                             leftSet.insert(left);
@@ -509,7 +509,7 @@ void Grammar::GetNonterminalFollowProductions(const MakeTableData& td,
                             }
                         }
                     }
-                    
+
                     // It must be a shift or accept
                     if (td.ActionTable[state][la] & ParseTable::ShiftMask) {
                         // Display this production (if something is following us)
@@ -537,7 +537,7 @@ void Grammar::GetNonterminalFollowProductions(const MakeTableData& td,
                                     // Should we deal with empty sets?
                                     ++dotPos;
                                     if (dotPos == prod.pProduction->Length) {
-                                        // Accepting nonterminal is special - 
+                                        // Accepting nonterminal is special -
                                         // nothing can derive it, so stop
                                         if (prod.pProduction->Left &
                                             ProductionMask::AcceptingNonTerminal) {
@@ -748,7 +748,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
             // If the Item is not there, make a new state for it
             unsigned searchIndex = 0u;
         find_next_productionset:
-            newState = unsigned(ParseTableProduction::FindVectorInSetOfSets(*pgotoSet, 
+            newState = unsigned(ParseTableProduction::FindVectorInSetOfSets(*pgotoSet,
                                     canonicalSet, searchIndex, type == ParseTableType::LR));
             if (newState == ParseTable::InvalidState) {
                 // Make a new state for the set
@@ -791,16 +791,16 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                             for (const auto iTerminal: prod.LookAhead) {
                                 // Is this terminal present in a map?
                                 if (reduceTerminals.find(iTerminal) != reduceTerminals.end()) {
-                                    // If reduce on this terminal would not result in 
+                                    // If reduce on this terminal would not result in
                                     // the same value, we got a problem
 
-                                    // Note that this might also happen if original had 
+                                    // Note that this might also happen if original had
                                     // a reduce-reduce conflict
                                     // because we don't check for it up front
                                     if (reduceTerminals[iTerminal] != prod.pProduction->Left) {
                                         searchIndex = newState + 1u;
                                         // Report a note
-                                        if (Messages.GetMessageFlags() & 
+                                        if (Messages.GetMessageFlags() &
                                             ParseMessageBuffer::MessageNote) {
                                             const auto msgtext = StringWithFormat(
                                                 "Recovered from LALR combine state R/R conflict on state %u",
@@ -820,7 +820,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                     sourceStates[newState].insert(state);
 
                     // Add new lookahead symbols to productions, if any
-                    // We assume productions appear in the same order in both 
+                    // We assume productions appear in the same order in both
                     // cononicalSet item & gotoSet
                     for (size_t i = 0u; i < cSetItem.size(); ++i)
                         for (const auto terminal: (*pgotoSet)[i].LookAhead) {
@@ -833,14 +833,14 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                                 pprod->LookAhead.insert(terminal);
 
                                 // If dot is not at the end
-                                // we need to store this lookahead into 
+                                // we need to store this lookahead into
                                 // all other productions that were
                                 // originally derived from this one
                                 if (pprod->Dot == pprod->pProduction->Length)
                                     break;
 
                                 const auto nextSymbol = pprod->pProduction->Right(pprod->Dot);
-                                // Use action table to figure out where 
+                                // Use action table to figure out where
                                 // next symbol would lead us to
                                 if (nextSymbol & ProductionMask::Terminal) {
                                     // Masks out the action flags
@@ -964,12 +964,12 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                                 if (stateIt.pProduction->ConflictActions.find(stateIt.Dot) !=
                                     stateIt.pProduction->ConflictActions.end()) {
                                     // If there is an entry for this terminal
-                                    auto& action = 
+                                    auto& action =
                                         stateIt.pProduction->ConflictActions[stateIt.Dot];
                                     if (action.Actions.find(prod.pProduction->Left) !=
                                         action.Actions.end()) {
                                         // Conflict action found
-                                        if (action.Actions[prod.pProduction->Left] == 
+                                        if (action.Actions[prod.pProduction->Left] ==
                                             Production::ConflictAction::Action::Reduce)
                                             goto set_reduce_action;
                                         // Do nothing
@@ -983,7 +983,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                         if (Precedence.find(iTerminal) != Precedence.end()) {
                             const auto& prec    = Precedence[iTerminal];
                             const auto  precVal = prec.Value & TerminalPrec::PrecMask;
-                            const auto  assoc   = TerminalPrec::Assoc(prec.Value & 
+                            const auto  assoc   = TerminalPrec::Assoc(prec.Value &
                                                                       TerminalPrec::AssocMask);
 
                             // If token precedence's greater then production, then shift
@@ -1012,7 +1012,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                         auto& prod1 = *stateItem[terminalItems[iTerminal]].pProduction;
                         auto& prod2 = *prod.pProduction;
 
-                        // See if this production is declared to take 
+                        // See if this production is declared to take
                         // precedence on this non-terninal
                         if (prod1.ReduceOverrides.find(prod2.Left) !=
                             prod1.ReduceOverrides.end())
@@ -1050,7 +1050,7 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
                                 prod.pProduction->Left & ProductionMask::AcceptingNonTerminal)
                                 actionRef = uint16_t(ParseTable::AcceptValue);
                             else
-                                actionRef = 
+                                actionRef =
                                     uint16_t(ParseTable::ReduceMask | prod.pProduction->Id);
                         }
 
@@ -1256,11 +1256,11 @@ bool Grammar::MakeParseTable(ParseTableGen& table, ParseTableType type) {
 
     // Report stats if needed
     if (Messages.GetMessageFlags() & ParseMessageBuffer::MessageStats) {
-        static constexpr const char* tableTypes[] = 
+        static constexpr const char* tableTypes[] =
         {
-            "", 
+            "",
             "LR(1)",
-            "LALR(1)", 
+            "LALR(1)",
             "CLR(1)"
         };
 
@@ -1562,7 +1562,7 @@ size_t GrammarOutputC::CreateProductionSwitch(String& str, const String& classNa
         } else {
             sameNameCounter = 1u;
             // Check why this special case exists
-            dest += productionName == "[Accept10]" ? String{"AcceptPVMRoot"} : productionName;
+            dest += productionName == "[Accept9]" ? String{"AcceptPVMRoot"} : productionName;
         }
 
         dest += ":\n" + tab + tab + tab + "break;\n\n";
@@ -1596,7 +1596,7 @@ size_t GrammarOutputC::CreateProductionEnum(String& str, const String& name,
     std::vector<Production*> prodVec;
     const auto size = pGrammar->CreateProductionVector(prodVec);
 
-    // If there are multiple productions with the same name, 
+    // If there are multiple productions with the same name,
     // this counter will be used to generate different labels for them
     size_t sameNameCounter = 1u;
 
@@ -1607,7 +1607,7 @@ size_t GrammarOutputC::CreateProductionEnum(String& str, const String& name,
                    if (enumValueIndex > 0u) {
                        const auto& productionName = prodVec[enumValueIndex]->Name;
 
-                       // If there are multiple productions with the same name, 
+                       // If there are multiple productions with the same name,
                        // generate different labels for them
                        if (productionName == prodVec[enumValueIndex - 1u]->Name) {
                            ++sameNameCounter;
@@ -1615,8 +1615,8 @@ size_t GrammarOutputC::CreateProductionEnum(String& str, const String& name,
                        } else {
                            sameNameCounter = 1u;
                            // Check why this special case exists
-                           return productionName == "[Accept10]" ? String{"AcceptPVMRoot"}
-                                                                 : productionName;
+                           return productionName == "[Accept9]" ? String{"AcceptPVMRoot"}
+                                                                : productionName;
                        }
                    } else {
                        // Return the initial accepting production enum entry

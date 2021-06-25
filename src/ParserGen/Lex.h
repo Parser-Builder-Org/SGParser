@@ -46,7 +46,7 @@ namespace Generator
 
 // ***** Lex class
 
-class Lex final 
+class Lex final
 {
 public:
     // DFA Construction type to use
@@ -59,7 +59,7 @@ public:
     };
 
     // Expressions - contain groups of lexemes
-    struct Expression final 
+    struct Expression final
     {
         unsigned StartLexeme;
         unsigned LexemeCount;
@@ -90,6 +90,12 @@ public:
 
     // Macros (macro name -> macro regular expression)
     std::map<String, String>                  Macros;
+
+    // Used to loop through keys of Macros[] in decl-order (vs. Macros[] which is in sort-order).
+    //  - every value of MacroNames[] is guaranteed to be a key of Macros[].
+    //  - every key of Macros[] is guaranteed to be a value of MacroNames[].
+    //  - MacroNames.size() == Macros.size().
+    std::vector<String>                       MacroNames;
 
     // Lexeme
     std::vector<Lexeme>                       Lexemes;

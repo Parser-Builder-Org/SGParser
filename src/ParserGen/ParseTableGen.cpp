@@ -53,7 +53,7 @@ void ParseTableGen::AllocateTables(size_t stateCount, size_t terminalCount,
 
 
 // Create a static parse table structure
-bool ParseTableGen::CreateStaticParseTable(String& str, const String& name, 
+bool ParseTableGen::CreateStaticParseTable(String& str, const String& name,
                                            const String& namespaceName) const {
     // The ParseTable must be valid
     if (!IsValid())
@@ -149,7 +149,7 @@ bool ParseTableGen::CreateStaticParseTable(String& str, const String& name,
 
         size_t i = 1u;
         // Go through all the accept states and add them
-        for (const auto [length, left, notReported, errorTerminalFlag]: ReduceProductions) {
+        for (const auto [length, left, notReported, errorTerminalFlag] : ReduceProductions) {
             dest += StringWithFormat("{%u, %u, %u, %u}", unsigned(length), unsigned(left),
                                      unsigned(notReported), unsigned(errorTerminalFlag));
 
